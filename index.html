@@ -97,7 +97,7 @@
         .songlist-toggle button{border:none;background:transparent;color:var(--gold);font-family:'Crimson Pro',serif;font-size:.85rem;cursor:pointer;padding:4px 12px;border-radius:12px;transition:all .3s ease;opacity:.6;letter-spacing:.05em}
         .songlist-toggle button:hover{opacity:1;background:rgba(201,169,110,.1)}
         .songlist{max-height:0;overflow:hidden;transition:max-height .6s cubic-bezier(.4,0,.2,1),opacity .4s ease,margin .4s ease;opacity:0;margin-top:0}
-        .songlist.open{max-height:600px;opacity:1;margin-top:1.5rem}
+        .songlist.open{max-height:70vh;opacity:1;margin-top:1.5rem;overflow-y:auto}
         .songlist-inner{border-top:1px solid rgba(201,169,110,.2);padding-top:1rem}
         .songlist h4{font-family:'Playfair Display',serif;font-size:1rem;color:var(--accent);text-align:center;margin-bottom:1rem;font-style:italic;font-weight:400}
         .songlist ol{text-align:left;list-style:none;padding:0;counter-reset:song}
@@ -216,62 +216,51 @@
 </main>
 
 <script>
-/* ===== SONG LINKS ===== */
-var S=[
-'<a class="song" href="https://open.spotify.com/intl-es/track/7lvEdc8T7o6mYzP94qHaqf?si=931c95bae60a4085" target="_blank" rel="noopener">Y aunque me hayas robado el coraz\u00f3n, pandillera...</a>',
-'<a class="song" href="https://open.spotify.com/intl-es/track/0q37bjxhRwzjtZynlU9ZsI?si=05d56474ede04672" target="_blank" rel="noopener">Tu sonrisa es lo que me hace sonre\u00edr a diario.</a>',
-'<a class="song" href="https://open.spotify.com/intl-es/track/5vO6EggxcYVqXyPzmDlnRT?si=1d460d3ad1664ff0" target="_blank" rel="noopener">Tienes unos ojos que los veo y me desmayo.</a>',
-'<a class="song" href="https://open.spotify.com/intl-es/track/5xSt1wxZobFcLzHrFakv6z?si=88d2e7cfb20241a4" target="_blank" rel="noopener">Necesito algo que no sea temporal.</a>',
-'<a class="song" href="https://open.spotify.com/intl-es/track/5Yhti6baaZnDyzehjTuAwZ?si=28c27defd1b54938" target="_blank" rel="noopener">Por siempre te cuidar\u00e9 como un bodyguard.</a>',
-'<a class="song" href="https://open.spotify.com/intl-es/track/3yJ8buQlPzQtHyCicOGDJ0?si=28bc98c43a744491" target="_blank" rel="noopener">Con tus ojos quiero toda mi manada.</a>',
-'<a class="song" href="https://open.spotify.com/intl-es/track/0h54mLixODOqU6vTcZMqVM?si=34dd1a452a104d0f" target="_blank" rel="noopener">Estamos unidas por el hilo rojo.</a>',
-'<a class="song" href="https://open.spotify.com/intl-es/track/4jjFjbqCTkaN1mGb0BMYl2?si=0fcd1e58eeec4252" target="_blank" rel="noopener">Ens\u00e9\u00f1ame a amar de nuevo.</a>',
-'<a class="song" href="https://open.spotify.com/intl-es/track/5bQLsyTrUaMQRfr6whwGe5?si=787da53c4c8944ab" target="_blank" rel="noopener">Si esto fuera un error, volver\u00eda a equivocarme.</a>',
-'<a class="song" href="https://open.spotify.com/intl-es/track/0zlnHTHiBQ68ZCAmTw5ozm?si=f3dcac35f0e24b65" target="_blank" rel="noopener">Esto que t\u00fa me haces sentir...</a>',
-'<a class="song" href="https://open.spotify.com/intl-es/track/3rdAz1fbUfZxYgaCviYhRo?si=408c8fecd24f49a3" target="_blank" rel="noopener">Es que me gusta todo de ti.</a>',
-'<a class="song" href="https://open.spotify.com/intl-es/track/5kCoykriGdZhWMlm9vrtQI?si=4472cebb8b6b4138" target="_blank" rel="noopener">Por ti saco poderes y te bajo la luna.</a>',
-'<a class="song" href="https://open.spotify.com/intl-es/track/6PBoSxskeHXpOuyz7fuPNC?si=2cb5bef69e7a4d1a" target="_blank" rel="noopener">M\u00e1s t\u00fa no entiendes cu\u00e1nto t\u00fa me gustas.</a>',
-'<a class="song" href="https://open.spotify.com/intl-es/track/50x1Ic8CaXkYNvjmxe3WXy?si=c254c5df13cd4b30" target="_blank" rel="noopener">Cierro mis ojos y lo \u00fanico que puedo ver es a ti.</a>',
-'<a class="song" href="https://open.spotify.com/intl-es/track/4oQjQV8yXdYjR5V78QSoC4?si=c8ff9cd53f0b4820" target="_blank" rel="noopener">Ahora de mi mente no sale tu nombre.</a>',
-'<a class="song" href="https://open.spotify.com/intl-es/track/3fhYAsNRR99ETnqrBZdAy0?si=37cd5d7fe68047a2" target="_blank" rel="noopener">Te pienso todo el d\u00eda.</a>',
-'<a class="song" href="https://open.spotify.com/intl-es/track/2Ch7LmS7r2Gy2kc64wv3Bz?si=c8ad1c7f31ac4684" target="_blank" rel="noopener">Yo morir\u00eda por ti.</a>',
-'<a class="song" href="https://open.spotify.com/intl-es/track/099tjv6oy2opbpCOA3nBwX?si=12b2bc144001452a" target="_blank" rel="noopener">Eres tal como te so\u00f1\u00e9.</a>',
-'<a class="song" href="https://open.spotify.com/intl-es/track/5FXARQTlf6UwUVuIS60Vn2?si=c9cb289588484cb9" target="_blank" rel="noopener">Y aunque a veces a\u00fan me pregunto qu\u00e9 somos...</a>',
-'<a class="song" href="https://open.spotify.com/intl-es/track/59dLtGBS26x7kc0rHbaPrq?si=f1c040bc61ed40c2" target="_blank" rel="noopener">Ninguna logra si quiera acercarse a ti.</a>',
-'<a class="song" href="https://open.spotify.com/intl-es/track/5WEF0icHWmAZBBMglBd599?si=c3dfe25b8be843fc" target="_blank" rel="noopener">Sonriendo t\u00fa te ves m\u00e1s bonita.</a>',
-'<a class="song" href="https://open.spotify.com/intl-es/track/3k3NWokhRRkEPhCzPmV8TW?si=56920797f94f4b94" target="_blank" rel="noopener">Aprend\u00ed que los momentos lindos nunca cuestan.</a>',
-'<a class="song" href="https://open.spotify.com/intl-es/track/3oNQ6NkihVzQkV5qhk2Pbe?si=a982aee82e694ac0" target="_blank" rel="noopener">Hay algo en ti.</a>',
-'<a class="song" href="https://open.spotify.com/intl-es/track/7xDBtwxsife3u8luqSbSPR?si=fffd227cce7344fe" target="_blank" rel="noopener">No me sueltes.</a>',
-'<a class="song" href="https://open.spotify.com/intl-es/track/2nU1vaARHQ8FoaxFfe4ZN7?si=b2198570a9a54ae8" target="_blank" rel="noopener">Me subes a las nubes.</a>',
-'<a class="song" href="https://open.spotify.com/intl-es/track/7xdRj1wA4XzYnXynPmtmnq?si=f8d310ef00a248a0" target="_blank" rel="noopener">Yo me dejo llevar.</a>',
-'<a class="song" href="https://open.spotify.com/intl-es/track/6WfxIJKmYRSpsBJv0tEAKX?si=431c3e8de98e4388" target="_blank" rel="noopener">Volver\u00eda a ti aunque me quedara sin memoria.</a>',
-'<a class="song" href="https://open.spotify.com/intl-es/track/1FlL8ycld6uVDDyhV7P5FA?si=f6401d84b3f54eb6" target="_blank" rel="noopener">C\u00farame.</a>',
-'<a class="song" href="https://open.spotify.com/intl-es/track/4OwhwvKESFtuu06dTgct7i?si=48833cfcc0494a4e" target="_blank" rel="noopener">Me siento como una ni\u00f1a estando contigo.</a>',
-'<a class="song" href="https://open.spotify.com/intl-es/track/7D0RhFcb3CrfPuTJ0obrod?si=1df6ef9eb7ec4e65" target="_blank" rel="noopener">Mi coraz\u00f3n es tuyo.</a>',
-'<a class="song" href="https://open.spotify.com/intl-es/track/6rYgEHuyhO064Lgj48qlIe?si=770680895d1e4960" target="_blank" rel="noopener">Te llamar\u00e9 m\u00eda.</a>',
-'<a class="song" href="https://open.spotify.com/intl-es/track/5uYAJlNp8ZmGPdkrhMwmLM?si=6879dcd7c64e4265" target="_blank" rel="noopener">Cu\u00eddate siempre.</a>',
-'<a class="song" href="https://open.spotify.com/intl-es/track/5JHB8QusYhTWdRw2KJekj6?si=424bb8eea23d4ad6" target="_blank" rel="noopener">Quiero estar siempre a tu ladito.</a>'
+/* ===== SONG URLs (language-independent) ===== */
+var SU=[
+'https://open.spotify.com/intl-es/track/7lvEdc8T7o6mYzP94qHaqf?si=931c95bae60a4085',
+'https://open.spotify.com/intl-es/track/0q37bjxhRwzjtZynlU9ZsI?si=05d56474ede04672',
+'https://open.spotify.com/intl-es/track/5vO6EggxcYVqXyPzmDlnRT?si=1d460d3ad1664ff0',
+'https://open.spotify.com/intl-es/track/5xSt1wxZobFcLzHrFakv6z?si=88d2e7cfb20241a4',
+'https://open.spotify.com/intl-es/track/5Yhti6baaZnDyzehjTuAwZ?si=28c27defd1b54938',
+'https://open.spotify.com/intl-es/track/3yJ8buQlPzQtHyCicOGDJ0?si=28bc98c43a744491',
+'https://open.spotify.com/intl-es/track/0h54mLixODOqU6vTcZMqVM?si=34dd1a452a104d0f',
+'https://open.spotify.com/intl-es/track/4jjFjbqCTkaN1mGb0BMYl2?si=0fcd1e58eeec4252',
+'https://open.spotify.com/intl-es/track/5bQLsyTrUaMQRfr6whwGe5?si=787da53c4c8944ab',
+'https://open.spotify.com/intl-es/track/0zlnHTHiBQ68ZCAmTw5ozm?si=f3dcac35f0e24b65',
+'https://open.spotify.com/intl-es/track/3rdAz1fbUfZxYgaCviYhRo?si=408c8fecd24f49a3',
+'https://open.spotify.com/intl-es/track/5kCoykriGdZhWMlm9vrtQI?si=4472cebb8b6b4138',
+'https://open.spotify.com/intl-es/track/6PBoSxskeHXpOuyz7fuPNC?si=2cb5bef69e7a4d1a',
+'https://open.spotify.com/intl-es/track/50x1Ic8CaXkYNvjmxe3WXy?si=c254c5df13cd4b30',
+'https://open.spotify.com/intl-es/track/4oQjQV8yXdYjR5V78QSoC4?si=c8ff9cd53f0b4820',
+'https://open.spotify.com/intl-es/track/3fhYAsNRR99ETnqrBZdAy0?si=37cd5d7fe68047a2',
+'https://open.spotify.com/intl-es/track/2Ch7LmS7r2Gy2kc64wv3Bz?si=c8ad1c7f31ac4684',
+'https://open.spotify.com/intl-es/track/099tjv6oy2opbpCOA3nBwX?si=12b2bc144001452a',
+'https://open.spotify.com/intl-es/track/5FXARQTlf6UwUVuIS60Vn2?si=c9cb289588484cb9',
+'https://open.spotify.com/intl-es/track/59dLtGBS26x7kc0rHbaPrq?si=f1c040bc61ed40c2',
+'https://open.spotify.com/intl-es/track/5WEF0icHWmAZBBMglBd599?si=c3dfe25b8be843fc',
+'https://open.spotify.com/intl-es/track/3k3NWokhRRkEPhCzPmV8TW?si=56920797f94f4b94',
+'https://open.spotify.com/intl-es/track/3oNQ6NkihVzQkV5qhk2Pbe?si=a982aee82e694ac0',
+'https://open.spotify.com/intl-es/track/7xDBtwxsife3u8luqSbSPR?si=fffd227cce7344fe',
+'https://open.spotify.com/intl-es/track/2nU1vaARHQ8FoaxFfe4ZN7?si=b2198570a9a54ae8',
+'https://open.spotify.com/intl-es/track/7xdRj1wA4XzYnXynPmtmnq?si=f8d310ef00a248a0',
+'https://open.spotify.com/intl-es/track/6WfxIJKmYRSpsBJv0tEAKX?si=431c3e8de98e4388',
+'https://open.spotify.com/intl-es/track/1FlL8ycld6uVDDyhV7P5FA?si=f6401d84b3f54eb6',
+'https://open.spotify.com/intl-es/track/4OwhwvKESFtuu06dTgct7i?si=48833cfcc0494a4e',
+'https://open.spotify.com/intl-es/track/7D0RhFcb3CrfPuTJ0obrod?si=1df6ef9eb7ec4e65',
+'https://open.spotify.com/intl-es/track/6rYgEHuyhO064Lgj48qlIe?si=770680895d1e4960',
+'https://open.spotify.com/intl-es/track/5uYAJlNp8ZmGPdkrhMwmLM?si=6879dcd7c64e4265',
+'https://open.spotify.com/intl-es/track/5JHB8QusYhTWdRw2KJekj6?si=424bb8eea23d4ad6'
 ];
 
-/* Song names for the list */
-var SN=[
-'Gatillera','309',
-'COMETIERRA REMIX','COSAS QUE NO TE DIJE',
-'INAROW62.','Reina Pepiada',
-'WO OH OHs','Amar de nuevo',
-'Aquel Nap ZzZz','Algo Magico',
-'Todo De Ti ','Toda-Remix',
-'Besito en la Frente','Those Eyes',
-'Enchule',
-'Die For You','Dream Girl-Remix',
-'Que Somos','Nothin´ on You(feat.Bruno Mars)',
-'WELTiTA','Ojitos Lindos',
-'Something About You','Sci-Fi''NO ME SUELTES','Nubes',
-'Committed','MUSEO',
-'C\u00farame','Tiroteo-Remix',
-'Sparks','I´ll Call You Mine',
-'Deportivo','YOKO'
-];
+/* ===== SONG TEXT (per language) ===== */
+var ST={
+es:['Y aunque me hayas robado el coraz\u00f3n, pandillera...','Tu sonrisa es lo que me hace sonre\u00edr a diario.','Tienes unos ojos que los veo y me desmayo.','Necesito algo que no sea temporal.','Por siempre te cuidar\u00e9 como un bodyguard.','Con tus ojos quiero toda mi manada.','Estamos unidas por el hilo rojo.','Ens\u00e9\u00f1ame a amar de nuevo.','Si esto fuera un error, volver\u00eda a equivocarme.','Esto que t\u00fa me haces sentir...','Es que me gusta todo de ti.','Por ti saco poderes y te bajo la luna.','M\u00e1s t\u00fa no entiendes cu\u00e1nto t\u00fa me gustas.','Cierro mis ojos y lo \u00fanico que puedo ver es a ti.','Ahora de mi mente no sale tu nombre.','Te pienso todo el d\u00eda.','Yo morir\u00eda por ti.','Eres tal como te so\u00f1\u00e9.','Y aunque a veces a\u00fan me pregunto qu\u00e9 somos...','Ninguna logra si quiera acercarse a ti.','Sonriendo t\u00fa te ves m\u00e1s bonita.','Aprend\u00ed que los momentos lindos nunca cuestan.','Hay algo en ti.','No me sueltes.','Me subes a las nubes.','Yo me dejo llevar.','Volver\u00eda a ti aunque me quedara sin memoria.','C\u00farame.','Me siento como una ni\u00f1a estando contigo.','Mi coraz\u00f3n es tuyo.','Te llamar\u00e9 m\u00eda.','Cu\u00eddate siempre.','Quiero estar siempre a tu ladito.'],
+en:['And even though you stole my heart, gangster girl...','Your smile is what makes me smile every day.','You have eyes that make me faint just looking at them.','I need something that isn\'t temporary.','I\'ll always protect you like a bodyguard.','With your eyes I want my whole crew.','We\'re bound by the red thread.','Teach me to love again.','If this was a mistake, I\'d make it again.','This thing you make me feel...','It\'s just that I like everything about you.','For you I\'d pull powers and bring down the moon.','But you don\'t get how much I like you.','I close my eyes and all I can see is you.','Now I can\'t get your name out of my head.','I think about you all day.','I would die for you.','You\'re exactly as I dreamed you.','And even though sometimes I still wonder what we are...','No one even comes close to you.','Smiling, you look even prettier.','I learned that beautiful moments never cost a thing.','There\'s something about you.','Don\'t let me go.','You lift me to the clouds.','I just go with the flow.','I\'d come back to you even if I lost all my memories.','Heal me.','I feel like a little girl when I\'m with you.','My heart is yours.','I\'ll call you mine.','Take care always.','I want to always be by your side.'],
+it:['E anche se mi hai rubato il cuore, ragazza di banda...','Il tuo sorriso \u00e8 quello che mi fa sorridere ogni giorno.','Hai degli occhi che li guardo e mi viene da svenire.','Ho bisogno di qualcosa che non sia temporaneo.','Per sempre ti protegger\u00f2 come una guardia del corpo.','Con i tuoi occhi voglio tutta la mia banda.','Siamo legate dal filo rosso.','Insegnami ad amare di nuovo.','Se questo fosse un errore, lo commetterei di nuovo.','Questa cosa che mi fai provare...','\u00c8 che mi piace tutto di te.','Per te tiro fuori poteri e ti abbasso la luna.','Ma tu non capisci quanto mi piaci.','Chiudo gli occhi e l\'unica cosa che riesco a vedere sei tu.','Ora dalla mia mente non esce il tuo nome.','Ti penso tutto il giorno.','Morirei per te.','Sei esattamente come ti avevo sognata.','E anche se a volte mi chiedo ancora cosa siamo...','Nessuna riesce nemmeno ad avvicinarsi a te.','Sorridendo sei ancora pi\u00f9 bella.','Ho imparato che i bei momenti non costano mai.','C\'\u00e8 qualcosa in te.','Non lasciarmi andare.','Mi fai salire sulle nuvole.','Io mi lascio trasportare.','Tornerei da te anche se rimanessi senza memoria.','Guariscimi.','Mi sento come una bambina quando sto con te.','Il mio cuore \u00e8 tuo.','Ti chiamer\u00f2 mia.','Stai bene sempre.','Voglio essere sempre al tuo fianco.'],
+hu:['\u00c9s b\u00e1r elloptad a sz\u00edvemet, banda l\u00e1ny...','A mosolyod az, ami minden nap mosolyt csal az arcomra.','Olyan szemeid vannak, hogy ha megl\u00e1tom, el\u00e1julok.','Olyanra van sz\u00fcks\u00e9gem, ami nem \u00e1tmeneti.','\u00d6r\u00f6kk\u00e9 vigy\u00e1zok r\u00e1d, mint egy test\u0151r.','A szemeiddel az eg\u00e9sz band\u00e1mat akarom.','A v\u00f6r\u00f6s sz\u00e1l k\u00f6t \u00f6ssze minket.','Tan\u00edts meg \u00fajra szeretni.','Ha ez egy hiba lenne, \u00fajra elk\u00f6vetn\u00e9m.','Ez az \u00e9rz\u00e9s, amit okozol nekem...','Az az igazs\u00e1g, hogy minden tetszik rajtad.','\u00c9rted er\u0151t mer\u00edtek \u00e9s leh\u00fazom neked a holdat.','De te nem \u00e9rted, mennyire tetszel nekem.','Bez\u00e1rom a szemem, \u00e9s egyed\u00fcl t\u00e9ged l\u00e1tok.','Most m\u00e1r a fejemb\u0151l nem megy ki a neved.','Eg\u00e9sz nap r\u00e1d gondolok.','\u00c9rted meghaln\u00e9k.','Pontosan olyan vagy, ahogy meg\u00e1lmodtalak.','\u00c9s b\u00e1r n\u00e9ha m\u00e9g mindig azon gondolkozom, mik vagyunk...','Senki sem tudja megk\u00f6zel\u00edteni m\u00e9g csak t\u00e9ged.','Mosolyogva m\u00e9g szebb vagy.','Megtanultam, hogy a sz\u00e9p pillanatok sosem ker\u00fclnek semmibe.','Valami van rajtad.','Ne engedd el.','A felh\u0151kre emelsz.','\u00c9n csak sodr\u00f3dom az \u00e1rral.','Visszat\u00e9rn\u00e9k hozz\u00e1d, m\u00e9g ha a mem\u00f3ri\u00e1m is elm\u00falna.','Gy\u00f3gy\u00edts meg.','Kisl\u00e1nyk\u00e9nt \u00e9rzem magam melletted.','A sz\u00edvem a ti\u00e9d.','Eny\u00e9mnek h\u00edvlak.','Vigy\u00e1zz magadra mindig.','Mindig a melletted akarok lenni.']
+};
+function getLinks(){var t=ST[lang]||ST.es;return SU.map(function(u,i){return '<a class="song" href="'+u+'" target="_blank" rel="noopener">'+t[i]+'</a>'})}
 
 /* ===== TRANSLATIONS ===== */
 var L=
@@ -470,7 +459,7 @@ function render(){
         var p=document.createElement('p');
         if(i===0) p.className='drop reveal';
         else p.className='reveal';
-        var html=text.replace(/\{(\d+)\}/g,function(m,n){return S[parseInt(n)]||m;});
+        var html=text.replace(/\{(\d+)\}/g,function(m,n){return getLinks()[parseInt(n)]||m;});
         p.innerHTML=html;
         c.appendChild(p);
     });
@@ -581,9 +570,9 @@ document.getElementById('songlistBtn').addEventListener('click',function(){
     else{
         sl.classList.add('open');
         var t=L[lang];this.textContent=t?t.sl_close:'cerrar';
-        if(sl.querySelector('li')) return;
         var list=document.getElementById('slList');
-        S.forEach(function(s,i){
+        list.innerHTML='';
+        getLinks().forEach(function(s){
             var li=document.createElement('li');
             li.innerHTML=s;
             list.appendChild(li);
