@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Para ti</title>
+    <meta name="description" content="Una carta">
+    <meta name="theme-color" content="#1a0f0a">
+    <meta property="og:title" content="Para ti 💗">
+    <meta property="og:description" content="Una carta de amor. Toca el sello para abrirla.">
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Para ti 💗">
+    <meta name="twitter:description" content="Una carta de amor. Toca el sello para abrirla.">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💗</text></svg>">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Dancing+Script:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+        :root{
+            --bg-start:#f5ebe0;--bg-end:#fce4ec;
+            --paper:#fffcf5;--paper-shadow:rgba(139,90,43,.08);
+            --text:#3d2c2e;--text-light:#6b5456;
+            --accent:#c48b9f;--gold:#c9a96e;
+            --intro-bg:#1a0f0a;--seal:#b33a3a;
+        }
+        html{scroll-behavior:smooth}
+        body{font-family:'Crimson Pro',Georgia,serif;background:linear-gradient(160deg,var(--bg-start) 0%,#f0ddd4 40%,var(--bg-end) 100%);background-attachment:fixed;color:var(--text);min-height:100vh;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+
+        /* ===== INTRO / WAX SEAL ===== */
+        #intro{position:fixed;inset:0;z-index:1000;background:var(--intro-bg);display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;transition:opacity 1.4s cubic-bezier(.4,0,.2,1),transform 1.4s cubic-bezier(.4,0,.2,1);-webkit-tap-highlight-color:transparent}
+        #intro.hidden{opacity:0;transform:scale(1.08);pointer-events:none}
+        .seal-wrap{position:relative;width:120px;height:120px;display:flex;align-items:center;justify-content:center}
+        .seal-wrap::before{content:'';position:absolute;width:160px;height:160px;border-radius:50%;background:radial-gradient(circle,rgba(196,139,159,.12) 0%,transparent 70%);animation:sealGlow 2.5s ease-in-out infinite}
+        .seal{width:90px;height:90px;border-radius:50%;background:radial-gradient(circle at 38% 35%,#e07070,#b33a3a 45%,#7a1a1a 100%);box-shadow:0 4px 15px rgba(0,0,0,.4),0 0 40px rgba(179,58,58,.25),inset 0 -3px 6px rgba(0,0,0,.3),inset 0 3px 6px rgba(255,255,255,.1);position:relative;z-index:1;transition:transform .3s ease,box-shadow .3s ease;animation:sealFloat 4s ease-in-out infinite}
+        .seal:hover{transform:scale(1.06);box-shadow:0 4px 15px rgba(0,0,0,.4),0 0 60px rgba(179,58,58,.35),inset 0 -3px 6px rgba(0,0,0,.3),inset 0 3px 6px rgba(255,255,255,.1)}
+        .seal svg{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:36px;height:36px;color:rgba(255,220,220,.7)}
+        .seal.cracking{animation:sealCrack .6s ease forwards}
+        .intro-title{font-family:'Playfair Display',serif;font-size:1.8rem;font-style:italic;color:#faf3e8;margin-top:2rem;letter-spacing:.06em;opacity:0;animation:fadeUp 1s ease .3s forwards}
+        .intro-hint{font-family:'Crimson Pro',serif;font-size:.85rem;color:rgba(250,243,232,.3);margin-top:1rem;letter-spacing:.2em;text-transform:lowercase;opacity:0;animation:fadeUp 1s ease .8s forwards,breathe 3s ease-in-out 2s infinite}
+        @keyframes sealFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+        @keyframes sealGlow{0%,100%{transform:scale(1);opacity:.4}50%{transform:scale(1.4);opacity:.8}}
+        @keyframes sealCrack{0%{transform:scale(1);opacity:1}30%{transform:scale(1.15);opacity:1}100%{transform:scale(1.4);opacity:0}}
+        @keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+        @keyframes breathe{0%,100%{opacity:.3}50%{opacity:.55}}
+
+        /* ===== CANVASES ===== */
+        #particles,#hearts{position:fixed;inset:0;z-index:0;pointer-events:none}
+        #hearts{z-index:100;pointer-events:none}
+
+        /* ===== LETTER ===== */
+        .letter-container{position:relative;z-index:1;max-width:700px;margin:0 auto;padding:2rem 1rem 5rem;min-height:100vh;display:flex;flex-direction:column;justify-content:center}
+
+        /* ===== PAPER ===== */
+        .paper{background:var(--paper);border-radius:3px;padding:3rem 2.8rem 2.5rem;box-shadow:0 1px 2px var(--paper-shadow),0 4px 8px rgba(139,90,43,.05),0 12px 32px rgba(139,90,43,.06),0 24px 60px rgba(139,90,43,.04);position:relative;overflow:visible}
+        .paper::before{content:'';position:absolute;top:0;left:0;right:0;bottom:0;background:radial-gradient(ellipse at 15% 20%,rgba(196,139,159,.03) 0%,transparent 50%),radial-gradient(ellipse at 85% 80%,rgba(201,169,110,.04) 0%,transparent 50%),radial-gradient(ellipse at 50% 0%,rgba(255,255,255,.6) 0%,transparent 40%);pointer-events:none;border-radius:3px}
+        .paper::after{content:'';position:absolute;top:0;left:0;right:0;bottom:0;background:repeating-linear-gradient(0deg,transparent,transparent 31px,rgba(200,180,160,.03) 31px,rgba(200,180,160,.03) 32px);pointer-events:none;opacity:.5;border-radius:3px}
+
+        /* ===== PAPER HEADER ===== */
+        .paper-header{position:relative;z-index:2;display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1.5rem;padding-bottom:1rem;border-bottom:1px solid rgba(196,139,159,.15)}
+        .paper-date{font-family:'Playfair Display',serif;font-size:.85rem;color:var(--text-light);font-style:italic}
+        .paper-counter{font-size:.8rem;color:var(--accent);text-align:right;line-height:1.5;margin-top:.2rem;font-variant-numeric:tabular-nums}
+        .paper-counter .num{font-weight:600;color:var(--text)}
+        .lang-switch{position:fixed;top:12px;right:12px;z-index:500;display:flex;gap:2px;background:rgba(255,252,245,.85);backdrop-filter:blur(8px);padding:4px 8px;border-radius:20px;box-shadow:0 2px 10px rgba(0,0,0,.08);opacity:0;transition:opacity .6s ease}
+        .lang-switch.show{opacity:1}
+        .lang-switch button{border:none;background:transparent;font-family:'Crimson Pro',serif;font-size:.78rem;color:var(--text-light);padding:2px 6px;border-radius:12px;cursor:pointer;transition:all .2s ease;letter-spacing:.03em}
+        .lang-switch button:hover{color:var(--text);background:rgba(196,139,159,.1)}
+        .lang-switch button.active{color:var(--accent);background:rgba(196,139,159,.12);font-weight:600}
+
+        /* ===== LETTER CONTENT ===== */
+        .letter-content{position:relative;z-index:1}
+        .letter-content p{font-size:1.12rem;line-height:1.9;margin-bottom:1.5rem;color:var(--text);text-align:justify;hyphens:auto;font-weight:400;transition:opacity .3s ease}
+        .letter-content p:last-of-type{margin-bottom:0}
+        .letter-content p.drop::first-letter{font-family:'Playfair Display',Georgia,serif;font-size:3.4rem;float:left;line-height:.85;margin-right:.08em;margin-top:.08em;color:var(--accent);font-weight:700}
+
+        /* ===== SONG LINKS ===== */
+        .letter-content a.song{color:inherit;text-decoration:none;background:transparent;transition:background .5s ease;border-radius:3px;padding:1px 2px;margin:-1px -2px;cursor:text;text-decoration:none!important}
+        .letter-content a.song:hover{background:linear-gradient(120deg,rgba(196,139,159,.13) 0%,rgba(201,169,110,.06) 100%);cursor:pointer}
+        .letter-content a.song:active{background:linear-gradient(120deg,rgba(196,139,159,.22) 0%,rgba(201,169,110,.1) 100%)}
+
+        /* ===== PLAYLIST ===== */
+        .playlist-section{text-align:center;margin-top:2rem;padding-top:1.5rem;position:relative}
+        .playlist-section::before{content:'♡ ♡ ♡';display:block;color:var(--gold);font-size:.7rem;letter-spacing:.8em;margin-bottom:1.5rem;opacity:.5}
+        .playlist-section p{text-align:center!important;font-style:italic;font-size:1.05rem!important;color:var(--text-light);margin-bottom:.6rem!important}
+        a.playlist{color:var(--accent)!important;font-family:'Playfair Display',serif;font-size:1.15rem;font-style:italic;text-decoration:none;position:relative;display:inline-block;padding:.3em 0;cursor:pointer!important;background:none!important;transition:color .3s ease,transform .3s ease}
+        a.playlist::after{content:'';position:absolute;bottom:0;left:50%;width:0;height:1px;background:linear-gradient(90deg,transparent,var(--accent),transparent);transition:width .8s cubic-bezier(.4,0,.2,1),left .8s cubic-bezier(.4,0,.2,1)}
+        a.playlist:hover::after{width:100%;left:0}
+        a.playlist:hover{color:#a76e85!important;transform:scale(1.02)}
+
+        /* ===== SIGNATURE ===== */
+        .signature{font-family:'Dancing Script',cursive;font-size:2.2rem;color:var(--accent);text-align:center;margin-top:2rem;font-weight:700;line-height:1.3;cursor:pointer;user-select:none;transition:transform .2s ease}
+        .signature:hover{transform:scale(1.03)}
+
+        /* ===== SONG LIST ===== */
+        .songlist-toggle{text-align:center;margin-top:1.8rem}
+        .songlist-toggle button{border:none;background:transparent;color:var(--gold);font-family:'Crimson Pro',serif;font-size:.85rem;cursor:pointer;padding:4px 12px;border-radius:12px;transition:all .3s ease;opacity:.6;letter-spacing:.05em}
+        .songlist-toggle button:hover{opacity:1;background:rgba(201,169,110,.1)}
+        .songlist{max-height:0;overflow:hidden;transition:max-height .6s cubic-bezier(.4,0,.2,1),opacity .4s ease,margin .4s ease;opacity:0;margin-top:0}
+        .songlist.open{max-height:600px;opacity:1;margin-top:1.5rem}
+        .songlist-inner{border-top:1px solid rgba(201,169,110,.2);padding-top:1rem}
+        .songlist h4{font-family:'Playfair Display',serif;font-size:1rem;color:var(--accent);text-align:center;margin-bottom:1rem;font-style:italic;font-weight:400}
+        .songlist ol{text-align:left;list-style:none;padding:0;counter-reset:song}
+        .songlist ol li{counter-increment:song;padding:.35rem 0 .35rem 2rem;position:relative;font-size:.92rem;color:var(--text-light);line-height:1.5}
+        .songlist ol li::before{content:counter(song) '.';position:absolute;left:0;color:var(--gold);font-style:italic;font-size:.85rem}
+        .songlist ol li a{color:var(--text-light);text-decoration:none;transition:color .2s}
+        .songlist ol li a:hover{color:var(--accent)}
+
+        /* ===== MUSIC TOGGLE ===== */
+        .music-btn{position:fixed;bottom:16px;right:16px;z-index:500;width:40px;height:40px;border-radius:50%;border:none;background:rgba(255,252,245,.85);backdrop-filter:blur(8px);box-shadow:0 2px 10px rgba(0,0,0,.08);cursor:pointer;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .6s ease,transform .2s ease}
+        .music-btn.show{opacity:1}
+        .music-btn:hover{transform:scale(1.1)}
+        .music-btn svg{width:18px;height:18px;color:var(--accent);transition:color .2s}
+        .music-btn.playing svg{animation:musicPulse 1.5s ease-in-out infinite}
+        @keyframes musicPulse{0%,100%{opacity:.7}50%{opacity:1;transform:scale(1.1)}}
+
+        /* ===== SCROLL REVEAL ===== */
+        .reveal{opacity:0;transform:translateY(20px);transition:opacity .8s cubic-bezier(.4,0,.2,1),transform .8s cubic-bezier(.4,0,.2,1)}
+        .reveal.visible{opacity:1;transform:translateY(0)}
+
+        /* ===== HEART RAIN ===== */
+        .heart-particle{position:fixed;z-index:99;pointer-events:none;animation:heartFall linear forwards}
+        @keyframes heartFall{0%{opacity:1;transform:translateY(0) rotate(0deg)}100%{opacity:0;transform:translateY(100vh) rotate(360deg)}}
+
+        /* ===== SCROLLBAR ===== */
+        ::-webkit-scrollbar{width:5px}
+        ::-webkit-scrollbar-track{background:transparent}
+        ::-webkit-scrollbar-thumb{background:rgba(196,139,159,.25);border-radius:3px}
+        ::-webkit-scrollbar-thumb:hover{background:rgba(196,139,159,.4)}
+        ::selection{background:rgba(196,139,159,.25);color:var(--text)}
+
+        /* ===== RESPONSIVE ===== */
+        @media(max-width:640px){
+            .paper{padding:2.2rem 1.6rem 2rem}
+            .letter-content p{font-size:1.02rem;line-height:1.85;text-align:left;hyphens:none}
+            .letter-content p.drop::first-letter{font-size:2.8rem}
+            .seal{width:74px;height:74px}
+            .seal svg{width:30px;height:30px}
+            .intro-title{font-size:1.5rem}
+            .signature{font-size:1.8rem}
+            .letter-container{padding:1.2rem .6rem 3rem}
+            .lang-switch{top:8px;right:8px;padding:3px 6px}
+            .lang-switch button{font-size:.72rem;padding:2px 4px}
+            .paper-header{flex-direction:column;gap:.3rem}
+            .paper-counter{text-align:left}
+        }
+        @media(max-width:380px){
+            .paper{padding:1.8rem 1.2rem 1.5rem}
+            .letter-content p{font-size:.97rem}
+        }
+    </style>
+</head>
+<body>
+
+<!-- INTRO -->
+<div id="intro" role="button" aria-label="Abrir carta" tabindex="0">
+    <div class="seal-wrap">
+        <div class="seal" id="seal">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+            </svg>
+        </div>
+    </div>
+    <p class="intro-title" id="introTitle">Para ti</p>
+    <p class="intro-hint" id="introHint">toca el sello para abrir</p>
+</div>
+
+<!-- CANVASES -->
+<canvas id="particles" aria-hidden="true"></canvas>
+<canvas id="hearts" aria-hidden="true"></canvas>
+
+<!-- LANGUAGE SWITCHER -->
+<nav class="lang-switch" id="langSwitch" aria-label="Language">
+    <button data-lang="es" class="active">ES</button>
+    <button data-lang="en">EN</button>
+    <button data-lang="it">IT</button>
+    <button data-lang="hu">HU</button>
+</nav>
+
+<!-- MUSIC TOGGLE -->
+<button class="music-btn" id="musicBtn" aria-label="Music">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" id="musicIcon">
+        <path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/>
+    </svg>
+</button>
+
+<!-- AUDIO -->
+<audio id="bgMusic" loop preload="auto">
+    <source src="Those Eyes.mp3" type="audio/mpeg">
+</audio>
+
+<!-- LETTER -->
+<main class="letter-container">
+    <div class="paper">
+        <div class="paper-header">
+            <div class="paper-date" id="paperDate"></div>
+            <div class="paper-counter" id="counter"></div>
+        </div>
+        <div class="letter-content" id="content"></div>
+        <div class="playlist-section reveal" id="playlistSection">
+            <p id="playlistPre"></p>
+            <a class="playlist" href="https://open.spotify.com/playlist/6uhfPbRTynEnUdnFwsUgDm?si=666546715be840b6&pt=f0cb78fd75633df509897b11a0cbc44c" target="_blank" rel="noopener" id="playlistLink"></a>
+        </div>
+        <p class="reveal" id="closing" style="margin-top:1.8rem"></p>
+        <div class="signature reveal" id="signature">Te amo.</div>
+        <div class="songlist-toggle reveal">
+            <button id="songlistBtn">♪</button>
+        </div>
+        <div class="songlist" id="songlist">
+            <div class="songlist-inner">
+                <h4 id="slTitle"></h4>
+                <ol id="slList"></ol>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script>
+/* ===== SONG LINKS ===== */
+var S=[
+'<a class="song" href="https://open.spotify.com/intl-es/track/7lvEdc8T7o6mYzP94qHaqf?si=931c95bae60a4085" target="_blank" rel="noopener">Y aunque me hayas robado el coraz\u00f3n, pandillera...</a>',
+'<a class="song" href="https://open.spotify.com/intl-es/track/0q37bjxhRwzjtZynlU9ZsI?si=05d56474ede04672" target="_blank" rel="noopener">Tu sonrisa es lo que me hace sonre\u00edr a diario.</a>',
+'<a class="song" href="https://open.spotify.com/intl-es/track/5vO6EggxcYVqXyPzmDlnRT?si=1d460d3ad1664ff0" target="_blank" rel="noopener">Tienes unos ojos que los veo y me desmayo.</a>',
+'<a class="song" href="https://open.spotify.com/intl-es/track/5xSt1wxZobFcLzHrFakv6z?si=88d2e7cfb20241a4" target="_blank" rel="noopener">Necesito algo que no sea temporal.</a>',
+'<a class="song" href="https://open.spotify.com/intl-es/track/5Yhti6baaZnDyzehjTuAwZ?si=28c27defd1b54938" target="_blank" rel="noopener">Por siempre te cuidar\u00e9 como un bodyguard.</a>',
+'<a class="song" href="https://open.spotify.com/intl-es/track/3yJ8buQlPzQtHyCicOGDJ0?si=28bc98c43a744491" target="_blank" rel="noopener">Con tus ojos quiero toda mi manada.</a>',
+'<a class="song" href="https://open.spotify.com/intl-es/track/0h54mLixODOqU6vTcZMqVM?si=34dd1a452a104d0f" target="_blank" rel="noopener">Estamos unidas por el hilo rojo.</a>',
+'<a class="song" href="https://open.spotify.com/intl-es/track/4jjFjbqCTkaN1mGb0BMYl2?si=0fcd1e58eeec4252" target="_blank" rel="noopener">Ens\u00e9\u00f1ame a amar de nuevo.</a>',
+'<a class="song" href="https://open.spotify.com/intl-es/track/5bQLsyTrUaMQRfr6whwGe5?si=787da53c4c8944ab" target="_blank" rel="noopener">Si esto fuera un error, volver\u00eda a equivocarme.</a>',
+'<a class="song" href="https://open.spotify.com/intl-es/track/0zlnHTHiBQ68ZCAmTw5ozm?si=f3dcac35f0e24b65" target="_blank" rel="noopener">Esto que t\u00fa me haces sentir...</a>',
+'<a class="song" href="https://open.spotify.com/intl-es/track/3rdAz1fbUfZxYgaCviYhRo?si=408c8fecd24f49a3" target="_blank" rel="noopener">Es que me gusta todo de ti.</a>',
+'<a class="song" href="https://open.spotify.com/intl-es/track/5kCoykriGdZhWMlm9vrtQI?si=4472cebb8b6b4138" target="_blank" rel="noopener">Por ti saco poderes y te bajo la luna.</a>',
+'<a class="song" href="https://open.spotify.com/intl-es/track/6PBoSxskeHXpOuyz7fuPNC?si=2cb5bef69e7a4d1a" target="_blank" rel="noopener">M\u00e1s t\u00fa no entiendes cu\u00e1nto t\u00fa me gustas.</a>',
+'<a class="song" href="https://open.spotify.com/intl-es/track/50x1Ic8CaXkYNvjmxe3WXy?si=c254c5df13cd4b30" target="_blank" rel="noopener">Cierro mis ojos y lo \u00fanico que puedo ver es a ti.</a>',
+'<a class="song" href="https://open.spotify.com/intl-es/track/4oQjQV8yXdYjR5V78QSoC4?si=c8ff9cd53f0b4820" target="_blank" rel="noopener">Ahora de mi mente no sale tu nombre.</a>',
+'<a class="song" href="https://open.spotify.com/intl-es/track/3fhYAsNRR99ETnqrBZdAy0?si=37cd5d7fe68047a2" target="_blank" rel="noopener">Te pienso todo el d\u00eda.</a>',
+'<a class="song" href="https://open.spotify.com/intl-es/track/2Ch7LmS7r2Gy2kc64wv3Bz?si=c8ad1c7f31ac4684" target="_blank" rel="noopener">Yo morir\u00eda por ti.</a>',
+'<a class="song" href="https://open.spotify.com/intl-es/track/099tjv6oy2opbpCOA3nBwX?si=12b2bc144001452a" target="_blank" rel="noopener">Eres tal como te so\u00f1\u00e9.</a>',
+'<a class="song" href="https://open.spotify.com/intl-es/track/5FXARQTlf6UwUVuIS60Vn2?si=c9cb289588484cb9" target="_blank" rel="noopener">Y aunque a veces a\u00fan me pregunto qu\u00e9 somos...</a>',
+'<a class="song" href="https://open.spotify.com/intl-es/track/59dLtGBS26x7kc0rHbaPrq?si=f1c040bc61ed40c2" target="_blank" rel="noopener">Ninguna logra si quiera acercarse a ti.</a>',
+'<a class="song" href="https://open.spotify.com/intl-es/track/5WEF0icHWmAZBBMglBd599?si=c3dfe25b8be843fc" target="_blank" rel="noopener">Sonriendo t\u00fa te ves m\u00e1s bonita.</a>',
+'<a class="song" href="https://open.spotify.com/intl-es/track/3k3NWokhRRkEPhCzPmV8TW?si=56920797f94f4b94" target="_blank" rel="noopener">Aprend\u00ed que los momentos lindos nunca cuestan.</a>',
+'<a class="song" href="https://open.spotify.com/intl-es/track/3oNQ6NkihVzQkV5qhk2Pbe?si=a982aee82e694ac0" target="_blank" rel="noopener">Hay algo en ti.</a>',
+'<a class="song" href="https://open.spotify.com/intl-es/track/7xDBtwxsife3u8luqSbSPR?si=fffd227cce7344fe" target="_blank" rel="noopener">No me sueltes.</a>',
+'<a class="song" href="https://open.spotify.com/intl-es/track/2nU1vaARHQ8FoaxFfe4ZN7?si=b2198570a9a54ae8" target="_blank" rel="noopener">Me subes a las nubes.</a>',
+'<a class="song" href="https://open.spotify.com/intl-es/track/7xdRj1wA4XzYnXynPmtmnq?si=f8d310ef00a248a0" target="_blank" rel="noopener">Yo me dejo llevar.</a>',
+'<a class="song" href="https://open.spotify.com/intl-es/track/6WfxIJKmYRSpsBJv0tEAKX?si=431c3e8de98e4388" target="_blank" rel="noopener">Volver\u00eda a ti aunque me quedara sin memoria.</a>',
+'<a class="song" href="https://open.spotify.com/intl-es/track/1FlL8ycld6uVDDyhV7P5FA?si=f6401d84b3f54eb6" target="_blank" rel="noopener">C\u00farame.</a>',
+'<a class="song" href="https://open.spotify.com/intl-es/track/4OwhwvKESFtuu06dTgct7i?si=48833cfcc0494a4e" target="_blank" rel="noopener">Me siento como una ni\u00f1a estando contigo.</a>',
+'<a class="song" href="https://open.spotify.com/intl-es/track/7D0RhFcb3CrfPuTJ0obrod?si=1df6ef9eb7ec4e65" target="_blank" rel="noopener">Mi coraz\u00f3n es tuyo.</a>',
+'<a class="song" href="https://open.spotify.com/intl-es/track/6rYgEHuyhO064Lgj48qlIe?si=770680895d1e4960" target="_blank" rel="noopener">Te llamar\u00e9 m\u00eda.</a>',
+'<a class="song" href="https://open.spotify.com/intl-es/track/5uYAJlNp8ZmGPdkrhMwmLM?si=6879dcd7c64e4265" target="_blank" rel="noopener">Cu\u00eddate siempre.</a>',
+'<a class="song" href="https://open.spotify.com/intl-es/track/5JHB8QusYhTWdRw2KJekj6?si=424bb8eea23d4ad6" target="_blank" rel="noopener">Quiero estar siempre a tu ladito.</a>'
+];
+
+/* Song names for the list */
+var SN=[
+'Y aunque me hayas robado el coraz\u00f3n, pandillera','Tu sonrisa es lo que me hace sonre\u00edr a diario',
+'Tienes unos ojos que los veo y me desmayo','Necesito algo que no sea temporal',
+'Por siempre te cuidar\u00e9 como un bodyguard','Con tus ojos quiero toda mi manada',
+'Estamos unidas por el hilo rojo','Ens\u00e9\u00f1ame a amar de nuevo',
+'Si esto fuera un error, volver\u00eda a equivocarme','Esto que t\u00fa me haces sentir',
+'Es que me gusta todo de ti','Por ti saco poderes y te bajo la luna',
+'M\u00e1s t\u00fa no entiendes cu\u00e1nto t\u00fa me gustas','Cierro mis ojos y lo \u00fanico que puedo ver es a ti',
+'Ahora de mi mente no sale tu nombre','Te pienso todo el d\u00eda',
+'Yo morir\u00eda por ti','Eres tal como te so\u00f1\u00e9',
+'Y aunque a veces a\u00fan me pregunto qu\u00e9 somos','Ninguna logra si quiera acercarse a ti',
+'Sonriendo t\u00fa te ves m\u00e1s bonita','Aprend\u00ed que los momentos lindos nunca cuestan',
+'Hay algo en ti','No me sueltes','Me subes a las nubes',
+'Yo me dejo llevar','Volver\u00eda a ti aunque me quedara sin memoria',
+'C\u00farame','Me siento como una ni\u00f1a estando contigo',
+'Mi coraz\u00f3n es tuyo','Te llamar\u00e9 m\u00eda',
+'Cu\u00eddate siempre','Quiero estar siempre a tu ladito'
+];
+
+/* ===== TRANSLATIONS ===== */
+var L=
+{
+  "en": {
+    "intro": "For you",
+    "hint": "tap the seal to open",
+    "date": "July 12, 2026",
+    "counter_pre": "We've been",
+    "days": "days",
+    "hours": "hours",
+    "minutes": "minutes",
+    "seconds": "seconds",
+    "and": "and",
+    "counter_suf": "together",
+    "playlist_pre": "For some reason you make it impossible to hear certain songs without thinking of you. There are too many that...",
+    "playlist_link": "remind me of you...",
+    "close": "I'll never get tired of thanking you for coming into my life. You're the best thing that ever happened to me. Thank you for everything, perfect girl.",
+    "sig": "I love you.",
+    "sl_title": "The songs I hid in this letter",
+    "sl_close": "close",
+    "music_on": "mute music",
+    "music_off": "play music",
+    "p": [
+      "Thank you for being you! For being you every day, for letting me be part of your life, for letting me be your girlfriend, for all the love you give me every day... simply, thank you for everything. I still wonder how I managed to live so long without you. You complement me perfectly. {0} I don't regret it at all that you did.",
+      "You bring out that side of me that's so strange and yet so special. And yes, I know I always say it, but it's the truth. I swear to you that no one has ever brought out this part of me before — this desire to love, this urge to show you just how much I can love you, this need to teach you what love is, this need to teach you how to love... Every day I discover even more what it feels like to love. It doesn't hurt, does it? Weird, right? I guess it's true: love shouldn't hurt. I just didn't know that yet. It fascinates me how in just one month —yes, exactly, ONE MONTH— you taught me so much about love. What I couldn't learn in years of being a lesbian and years of being straight, I learned with you in one month: 31 days, 44,800 minutes, 2,628,002.88 seconds. Thank you for teaching me to love.",
+      "{1} It's something silly, but I love it when you laugh, when one of my weird jokes makes you smile. You have no idea how happy that makes me. {2} You have the most precious eyes I've ever seen in my life, they're magical. As if, if I looked into them too long, they'd take me to another dimension. And I wouldn't really mind... getting lost in your gaze to get there.",
+      "{3} I've been needing this for a long time, and I think I've finally found it. I wouldn't mind spending the rest of my life with you, honestly. I wouldn't mind keeping you all to myself for the rest of my life. {4} And I know you can take care of yourself, but when you can't, I'll always be there to help you. Whenever you're about to fall, I'll catch you and help you. I'm never going to let you fall. Never.",
+      "{5} Yes, I know. I know we have a whole life ahead of us, but I want a baby just as beautiful as her mom. And no, it's not like I love the idea of changing diapers, but I don't mind as long as I get to have a family by your side. {6} Nothing more real than that. No matter the distance between us, the red thread will always bind us.",
+      "{7} I want to know what love is with you, even though I think I've known since the day I met you. {8} I don't think it is one, but even so... I'd make that \"mistake\" a thousand and one times over. {9} I'm still searching for the words to describe it. You make me feel truly loved, like I've never felt before. You make me feel like the luckiest person in the world.",
+      "{10} Seriously, I keep looking for the flaws you talk about but I can't find them anywhere. I love every part of you: the way you are, the way you express yourself, the way you make me feel. I like you. {11} I'm capable of doing anything just to show you how much, much, muuuuuch, but really much I love you. I guess I made that clear: for me, a word can easily be empty, which is why I prefer to show my feelings rather than say them. {12} And I get it, I'm not great at expressing myself either, but it's just that there aren't words to express it to you.",
+      "{13} I got used to not being able to get you out of my mind. You're everywhere: in my dreams, in my thoughts. We're practically always together even when we don't talk, since I spend 24/7 thinking about you. {14} I'll say it again: I can't stop thinking about you. No matter what I do, my mind always goes to you, I can't help it. Just like I can't help, at random moments in my life, remembering our conversations and smiling. {15} I'll never get tired of saying it: you're my favorite thought. You're the first thing I think of when I wake up and the last thing I think of before I fall asleep. I don't know how you managed it, I can't get you out of my mind, but deep down I like it. You're definitely the best thought that has ever crossed my mind. The best, brightest and most beautiful thought.",
+      "{16} If I have to sacrifice my life for yours, I'd do it gladly. When I say I'd do anything for you, I mean it very seriously. {17} Seriously, it's as if you'd stepped right out of my dreams. You're exactly as I dreamed you'd be, you're a dream come true. I still find it hard to believe this is real. If this is a dream, I ask God to never let me wake up.",
+      "{18} I remember that I don't need anything official to know that you're the love of my life. {19} No one will ever be better than you in any way. In my eyes, that's how it is: you're the definition of perfection in person. {20} I hate it when you feel sad, when your beautiful smile disappears from your face, and I hate that. Seeing you happy makes me happy. But the most magical thing about this is that even when you're sad, that characteristic glow you have doesn't fade. You're brighter than a diamond, and more valuable too, obviously.",
+      "{21} Every second I spend with you feels special, truly magical. Whatever we do, it feels special with you. And I'm pretty sure it feels special because it's with you. It seems impossible to me that it could feel the same with anyone but you. {22} Something that makes me feel good, something that makes me feel alive. I know I was never dead, but you brought me back to life, you gave me back the glow that was taken from me. Any bad day can turn into a good one just by hearing your voice.",
+      "{23} I don't want you to ever let me go, never, never, never, never. I know, I can make mistakes sometimes, or honestly, quite often. I don't do it on purpose, the last thing I want is for you to drift away from me over something stupid. That's my worst nightmare. I can guarantee you that no matter what happens, no matter what I say, I'll keep loving you. Even if sometimes I get mad over silly things, it will never truly be your fault. I promise you. {24} You make me float on clouds, living a dream. I never want to come down. Let me stay here flying, living my biggest dream and wish: to be happy.",
+      "{25} I trust you. You have my heart in your hands and I know it's very safe there. I entrust it to you. I don't think there's a better person than you to give my heart to. After all, you've earned it: you healed it, healed every one of its wounds with love. And even though it still has a long way to heal, I'm sure you'll heal with love what others broke with words. {26} I'm very sure that if I forgot everything, I'd come back to you. You know why? Because I'd feel like something is missing. I'd surely try to fill what's missing, like I already did, but nothing would change. No one would manage to make me feel complete, because none of those people would be you. My soul would look for you even if I didn't remember you. If my life were a puzzle, you were always the missing piece.",
+      "{27} Heal me, my love, please. It's sad that you're healing something you didn't even break, but you do it without even trying. I feel alive being with you, I feel like myself, I feel like I can be me without being anyone else. I can be myself with you. I feel safe by your side. I know nothing bad can happen while I'm with you.",
+      "{28} You bring out my childish side, you make me feel like a little girl when I'm with you, and I love that feeling. And honestly it's weird, it was something I hated in other relationships: childish people. Spoiler: the problem was always that it was a man. Men in general gross me out, and I wasn't about to put up with childish behavior from them, even when I was \"straight\". Now I realize that being childish isn't a bad thing — on the contrary, it's a good thing, it means you bring out my inner child. If little me were here right now and could have an opinion, I'm sure she wouldn't understand why I'm with a woman and not a blue-eyed blonde man, but once she realized how good you make me feel, she'd understand everything and want to meet you as soon as possible. If I was \"into boys 4life\", it was only to fit in and be like everyone else, unfortunately. I wish I could have met you sooner. I don't know, honestly, if I would have been able to appreciate you back then the way I do now, but I wish my soul had found you sooner, much sooner.",
+      "{29} Yours, only yours. And even if we were to separate, it still would be. Forever my heart will keep beating for you. I was afraid to love again, so afraid, more than I can describe. I remembered that love hurt, a lot, but love does everything except hurt. When I found you I decided to take the risk and risk suffering again. It's the best decision I could have made. I'm very sure of that. I feel good with you, I feel like I can handle whatever comes, because I have you. You do me good.",
+      "{30} You have no idea how proud I feel that you're my girlfriend. I could never feel ashamed of it. It's the greatest pride having you as my girlfriend. You know? Like: bro, look at my girl, she chose me. ME. Thank you for letting me be your girlfriend, for choosing me among all the other options, for giving me the great privilege of knowing you. {31} Every night I ask God to watch over you and give you happiness, because you deserve it more than anyone in the world.",
+      "{32} I want to be with you always, to see you thrive, laugh, achieve your goals, to see you being happy being you. Not every day is happy and I know that, which is why I commit to being there for both the good moments and the bad ones. I'll be there with you to hold you while you cry or laugh. That's what loving someone is about: being always there, no matter what. And that's why I'll never leave your side, like a little Minecraft dog. The only way I'll stop being with you is when you decide that I should.",
+      "I asked for you, I wished for you every 11:11. I've been missing you my whole life without knowing it. You're the best thing that could have happened to me, and I'm honestly so grateful that you let me be part of your life. I know your other experiences with love weren't the best, which is why I try every day to help you learn what love is, so that if one day I'm no longer around, you'll know what you deserve and what you don't. Maybe I can't give you everything you deserve, but I can give you all the love my heart has to offer.",
+      "I might sometimes go on about sexual topics. I just want to say that everything I say is with humor, and I would never want you to do anything you don't want to do, and I certainly won't get mad because you won't do something. Every person in this world deserves respect, deserves to have their body and their decisions respected. I'm sorry if no one respected you before. Here I am to do it for all those who didn't. And even though I truly don't know what you've been through, I understand and support you, and I'll always be here for you if you need to talk about anything. Believe me, I care. Every little thing you say, I care about. I really do. Like if you just saw an ant carrying a piece of bread, or like you're about to move, or like you drank water and it tasted like shit. All of that matters to me. They're not silly things to me, I promise you they'll be important to me, and I'll remember them, whatever they are.",
+      "And even if we stop being together, I'll still be here whenever you need me. Like if your new partner is a piece of shit to you and I have to give them a couple of \"lessons\" on how you deserve to be treated, or like you're about to get married and you regret it, I'll come find you and we'll run away together. No matter what, I'll always be here for you. No matter what."
+    ]
+  },
+  "it": {
+    "intro": "Per te",
+    "hint": "tocca il sigillo per aprire",
+    "date": "12 luglio 2026",
+    "counter_pre": "Siamo",
+    "days": "giorni",
+    "hours": "ore",
+    "minutes": "minuti",
+    "seconds": "secondi",
+    "and": "e",
+    "counter_suf": "insieme",
+    "playlist_pre": "Per qualche motivo mi fai sì che non posso ascoltare certe canzoni senza pensare a te. Ce ne sono troppe che...",
+    "playlist_link": "mi ricordano te...",
+    "close": "Non mi stancherò mai di ringraziarti per essere arrivata nella mia vita. Sei la cosa migliore che mi sia mai capitata. Grazie di tutto, ragazza perfetta.",
+    "sig": "Ti amo.",
+    "sl_title": "Le canzoni che ho nascosto in questa lettera",
+    "sl_close": "chiudi",
+    "music_on": "silenzia musica",
+    "music_off": "ascolta musica",
+    "p": [
+      "Grazie per essere tu! Per essere tu ogni giorno, per permettermi di essere parte della tua vita, per lasciarmi essere la tua ragazza, per tutto l'amore che mi dai ogni giorno... semplicemente, grazie di tutto. Mi chiedo ancora come ho fatto a vivere così tanto tempo senza di te. Mi completi perfettamente. {0} Non me ne pento affatto che tu l'abbia fatto.",
+      "Mi fai venire fuori quel lato così strano e allo stesso tempo speciale. E sì, so che lo dico sempre, ma è la verità. Giuro che nessuno mi aveva mai fatto venire fuori questa parte di me, questa voglia di amare, questa voglia di dimostrarti quanto posso amarti, questa voglia di insegnarti cos'è l'amore, questa voglia di insegnarti ad amare... Ogni giorno scopro sempre di più cosa si prova ad amare. Non fa male, vero? Strano, no? Suppongo sia vero: l'amore non deve fare male. Solo che io non lo sapevo ancora. Mi affascina come in un mese —sì, esatto, UN MESE— mi hai insegnato così tante cose sull'amore. Quello che non sono riuscita a imparare in anni lesbici e anni eterosessuali, l'ho imparato con te in un mese: 31 giorni, 44.800 minuti, 2.628.002,88 secondi. Grazie per insegnarmi ad amare.",
+      "{1} È una cosa sciocca, ma mi piace da morire quando ridi, quando una delle mie strane battute ti fa sorridere. Non sai quanto mi renda felice quello. {2} Hai gli occhi più preziosi che abbia mai visto in vita mia, sono magici. Come se, se li guardassi troppo, mi portassero in un'altra dimensione. E non mi dispiacerebbe molto, a dire il vero... perdermi nel tuo sguardo per arrivarci.",
+      "{3} Ne avevo bisogno da tanto tempo, e credo di averlo finalmente trovato. Non mi dispiacerebbe passare il resto della mia vita con te, per essere sincera. Non mi dispiacerebbe tenerti tutta per me per il resto della mia vita. {4} E so che sai badare a te stessa, ma quando non puoi, ci sarò sempre ad aiutarti. Ogni volta che stai per cadere, ti prenderò e ti aiuterò. Non ti lascerò mai cadere. Mai.",
+      "{5} Sì, lo so. So che ci resta tutta una vita davanti, ma voglio una bambina altrettanto bella della sua mamma. E no, non è che mi entusiasmi l'idea di cambiare pannolini, ma non mi importa pur di avere una famiglia al tuo fianco. {6} Niente di più reale di questo. Non importa la distanza che ci separerà, il filo rosso ci unirà sempre.",
+      "{7} Voglio sapere cos'è l'amore con te, anche se credo di saperlo dal giorno in cui ti ho conosciuta. {8} Non credo che lo sia, ma anche così... commetterei quello \"sbaglio\" mille e una volte ancora. {9} Continuo a cercare le parole per poterlo descrivere. Mi fai sentire veramente amata, come non mi sono mai sentita prima. Mi fai sentire la persona più fortunata del mondo.",
+      "{10} È sul serio, continuo a cercare i difetti di cui parli ma non li trovo da nessuna parte. Mi piace ogni parte di te: il modo in cui sei, il modo in cui ti esprimi, il modo in cui mi fai sentire. Mi piaci tu. {11} Sono capace di fare qualsiasi cosa solo per dimostrarti quanto, quanto, moooolto, ma tanto ti amo. Credo di averlo chiarito: per me, una parola può facilmente essere vuota, per questo preferisco dimostrare i miei sentimenti invece di dirli. {12} E lo capisco, anche io non sono la migliore a esprimermi, ma è che non esistono parole per esprimertelo.",
+      "{13} Mi sono abituata a non riuscire a toglierti dalla mia mente. Sei ovunque: nei miei sogni, nei miei pensieri. Praticamente siamo sempre insieme anche quando non parliamo, visto che ti penso 24/7. {14} Lo ripeto: non riesco a smettere di pensare a te. Non importa cosa faccia, la mia mente pensa sempre a te, non posso farne a meno. Proprio come non posso farne a meno, in momenti a caso della mia vita, di ricordare le nostre conversazioni e sorridere. {15} Non mi stancherò mai di dirlo: sei il mio pensiero preferito. Sei la prima cosa a cui penso svegliandomi e l'ultima prima di addormentarmi. Non so come ci sei riuscita, non riesco a toglierti dalla mia mente, ma in fondo mi piace. Sei decisamente il pensiero più bello che abbia mai attraversato la mia testa. Il migliore, il più luminoso e il più bello pensiero.",
+      "{16} Se devo sacrificare la mia vita per la tua, lo faccio volentieri. Quando dico che farei qualsiasi cosa per te, lo dico molto seriamente. {17} Sul serio, è come se fossi uscita dai miei sogni. Sei esattamente come ti avevo sognata, sei un sogno diventato realtà. Ancora mi fa fatica credere che sia vero. Se è un sogno, chiedo a Dio di non farmi svegliare mai.",
+      "{18} Ricordo che non mi serve niente di ufficiale per sapere che sei l'amore della mia vita. {19} Nessuno sarà mai migliore di te in nessun senso. Ai miei occhi è così: sei la definizione della perfezione in persona. {20} Odio quando ti senti triste, quando il tuo bel sorriso scompare dal tuo viso, e odio questo. Vederti felice mi rende felice. Ma la cosa più magica di tutto questo è che anche stando triste non se ne va quel brillio così caratteristico che hai. Sei più brillante di un diamante, e più preziosa anche, ovviamente.",
+      "{21} Ogni secondo che passo con te si sente speciale, si sente veramente magico. Qualsiasi cosa facciamo, si sente speciale con te. E sono piuttosto sicura che si senta speciale perché è con te. Mi sembra impossibile che si possa sentire allo stesso modo con qualcuno che non sia te. {22} Qualcosa che mi fa sentire bene, qualcosa che mi fa sentire viva. So che non sono mai stata morta, ma mi hai ridato la vita, mi hai ridato il brillio che mi avevano rubato. Qualsiasi giornata brutta può diventare buona con il solo fatto di sentire la tua voce.",
+      "{23} Non voglio che mi lasci mai, mai, mai, mai. Lo so, posso commettere errori a volte, o per essere sincera, abbastanza spesso. Non lo faccio apposta, l'ultima cosa che voglio è che per una sciocchezza ti allontani da me. È il mio peggior incubo. Ti posso garantire che qualunque cosa succeda, qualunque cosa dica, continuo ad amarti. Anche se a volte mi arrabbio per sciocchezze, non sarà mai veramente colpa tua. Te lo prometto. {24} Mi fai galleggiare sulle nuvole, vivendo un sogno. Non voglio scendere mai. Lasciami qui a volare, vivendo il mio sogno e desiderio più grande: essere felice.",
+      "{25} Mi fido di te. Hai il mio cuore tra le tue mani e so che è molto al sicuro lì. Te lo affido. Non credo che ci sia una persona migliore di te a cui dare il mio cuore. Dopotutto, te lo meriti: tu l'hai guarito, hai curato ognuna delle sue ferite con amore. E anche se gli manca ancora molto da guarire, sono sicura che curerai con amore quello che altri hanno rotto con le parole. {26} Sono molto sicura che se dimenticassi tutto, tornerei da te. Sai perché? Perché sentirei che mi manca qualcosa. Sicuramente cercherei di riempire quello che mi manca, come ho già fatto, ma niente cambierebbe. Nessuno riuscirebbe a farmi sentire completa, perché nessuna di quelle persone saresti tu. La mia anima ti cercherebbe anche se non ti ricordassi. Se la mia vita fosse un puzzle, tu saresti sempre stata il pezzo mancante.",
+      "{27} Guariscimi, amore mio, per favore. È triste che tu guarisca qualcosa che nemmeno tu hai rotto, ma lo fai senza nemmeno sforzarti. Mi sento viva stando con te, mi sento me stessa, sento che posso essere me stessa senza essere nessun'altra. Posso essere me stessa con te. Mi sento al sicuro al tuo fianco. So che niente di male può succedere mentre sono con te.",
+      "{28} Mi fai venire fuori il mio lato infantile, mi fai sentire come una bambina quando sto con te, e adoro questa sensazione. E a dire il vero è strano, era una cosa che odiavo in altre relazioni: le persone infantili. Spoiler: il problema era sempre che fosse un uomo. Gli uomini di per sé mi fanno schifo, e non ero disposta a sopportare comportamenti infantili da parte loro, ed era così anche quando ero \"etero\". Ora mi rendo conto che essere infantili non è una cosa cattiva, al contrario, è una cosa buona, significa che fai uscire la mia bambina interiore. Se in questo momento la me piccola fosse qui e potesse dare la sua opinione, sono sicura che non capirebbe perché sto con una donna e non con un uomo biondo con gli occhi azzurri, ma sicuramente, capendo quanto bene mi fai sentire, capirebbe tutto e vorrebbe conoscerti il prima possibile. Se sono stata \"cotta per i ragazzi 4life\", è stato solo per inserirmi ed essere come tutte le altre, purtroppo. Magari avessi potuto conoscerti prima. Non so, a dire il vero, se prima ti avrei potuta apprezzare come lo faccio ora, ma vorrei che la mia anima ti avesse trovata prima, molto prima.",
+      "{29} Tua, solo tua. E anche se ci separassimo, lo continuerebbe a essere. Per sempre il mio cuore continuerà a battere per te. Avevo paura di amare di nuovo, tanta paura, più di quanto possa descrivere. Ricordavo che l'amore faceva male, e molto, ma l'amore fa di tutto tranne che fare male. Trovandoti ho deciso di rischiare e prendere il rischio di soffrire di nuovo. È la migliore decisione che potessi prendere. Ne sono molto sicura. Mi sento bene con te, sento che ce la posso fare con tutto quello che verrà, perché ti ho te. Mi fai bene.",
+      "{30} Non sai l'orgoglio che provo nel sapere che sei la mia ragazza. Non potrei mai vergognarmi di esserlo. È il più grande orgoglio averti come ragazza. Sai? Tipo: bro, guarda la mia donna, lei ha scelto me. ME. Grazie per lasciarmi essere la tua ragazza, per avermi scelta tra tutte le altre opzioni, per avermi concesso il grande privilegio di conoscerti. {31} Ogni notte chiedo a Dio di proteggerti e darti felicità, perché te la meriti più di chiunque altro al mondo.",
+      "{32} Voglio stare con te sempre, vederti trionfare, ridere, raggiungere i tuoi obiettivi, vederti felice essendo te stessa. Non tutti i giorni sono felici e lo so, per questo mi impegno a esserci sia nei momenti buoni che in quelli cattivi. Sarò lì con te per abbracciarti mentre piangi o ridi. Di questo si tratta amare: essere sempre lì, succeda quello che succede. E per questo non mi allontanerò mai dal tuo fianco, come un cagnolino di Minecraft. L'unico modo in cui smetterò di stare con te è quando tu deciderai che lo smetta.",
+      "Ti ho chiesto, ti ho desiderata ogni 11:11. Mi sei mancata tutta la vita senza saperlo. Sei la cosa migliore che mi potesse capitare, e sul serio sono molto grata che mi permetti di essere parte della tua vita. So che le tue altre esperienze d'amore non sono state le migliori, per questo mi impegno ogni giorno per farti imparare cos'è l'amore, così se un giorno non ci sarò più, saprai cosa meriti e cosa no. Forse non posso darti tutto quello che meriti, ma posso darti tutto l'amore che il mio cuore ha da offrire.",
+      "Potrebbe capitarmi di parlare a volte di argomenti sessuali. Voglio solo dire che tutto quello che dico è con umorismo, e in nessun momento vorrei che tu faccia qualcosa che non vuoi fare, e tantomeno mi arrabbierò perché non fai qualcosa. Ogni persona di questo mondo merita rispetto, merita che il suo corpo e le sue decisioni vengano rispettati. Mi dispiace se nessuno ti ha rispettata prima. Qui ci sono io per farlo per tutti quelli che non lo hanno fatto. E anche se in verità non so cosa hai vissuto, ti capisco e ti sostengo, e sarò sempre qui per te se hai bisogno di parlare di qualsiasi cosa. Credimi, mi importa. Ogni minima cosa che dici, mi importa. Mi importa davvero. Come se hai appena visto una formica che trasportava un pezzo di pane, o come se stai per traslocare, o come se hai bevuto acqua e sapeva di merda. Tutto questo mi importa. Non sono cose sciocche per me, ti assicuro che saranno importanti per me, e me le ricorderò, qualunque cosa sia.",
+      "E anche se smettessimo di stare insieme, continuerei a essere qui per quando hai bisogno di me. Come se la tua nuova partner fa schifo con te e devo darle un paio di \"lezioni\" su come meriti di essere trattata, o come se stai per sposarti e te ne penti, io ti cerco e scappiamo insieme. Succeda quello che succeda, sarò sempre qui per te. Non importa cosa."
+    ]
+  },
+  "hu": {
+    "intro": "Neked",
+    "hint": "koppints a pecsétre a megnyitáshoz",
+    "date": "2026. július 12.",
+    "counter_pre": "Már",
+    "days": "napja,",
+    "hours": "órája",
+    "minutes": "perce",
+    "seconds": "másodperce",
+    "and": "és",
+    "counter_suf": "együtt vagyunk",
+    "playlist_pre": "Valamiért úgy teszed, hogy bizonyos dalokat nem tudok meghallgatni anélkül, hogy rád gondolnék. Túl sok van, ami...",
+    "playlist_link": "emlékeztet tégedre...",
+    "close": "Soha nem fogom megunni, hogy hálás legyek azért, amiért az életembe jöttél. Te vagy a legjobb dolog, ami valaha történt velem. Köszönöm mindent, tökéletes lány.",
+    "sig": "Szeretlek.",
+    "sl_title": "A dalok, amiket elrejtettem ebben a levélben",
+    "sl_close": "bezárás",
+    "music_on": "zene némítása",
+    "music_off": "zene hallgatása",
+    "p": [
+      "Köszönöm, hogy te vagy! Hogy minden nap te vagy, hogy része lehetek az életednek, hogy a barátnőd lehetek, hogy minden nap ennyi szeretetet adsz nekem... egyszerűen, köszönöm mindent. Még mindig azon gondolkozom, hogyan tudtam ilyen sokáig élni nélküled. Tökéletesen kiegészítesz. {0} Egyáltalán nem bántam meg, hogy ezt tetted.",
+      "Kiviszed belőlem azt a furcsa, de egyben különleges oldalamat. És igen, tudom, hogy mindig ezt mondom, de ez az igazság. Megesküszöm, hogy soha senki nem hozta ki belőlem ezt a részt, ezt a vágyat a szeretetre, ezt az igényt, hogy megmutassam mennyire tudlak szeretni, ezt a vágyat, hogy megtanítsam neked, mi az szeretet, hogy megtanítsalak szeretni... Minden nap egyre jobban felfedezem, milyen érzés szeretni. Nem fáj, ugye? Furcsa, nem? Azt hiszem, igaz: a szeretetnek nem szabadna fájnia. Csak ezt én még nem tudtam. Lenyűgöz, ahogy egy hónap alatt —igen, pontosan, EGY HÓNAP— annyi mindent megtanítottál a szeretetről. Amit nem sikerült megtanulnom évekig tartó leszbikus és heteroszexuális éveim alatt, azt megtanultam veled egy hónap alatt: 31 nap, 44 800 perc, 2 628 002,88 másodperc. Köszönöm, hogy megtanítottál szeretni.",
+      "{1} Butaság, de imádom, amikor nevetesz, amikor az egyik furcsa viccemtől elmosolyodsz. Fogalmad sincs, mennyire boldoggá tesz ez. {2} Életed legszebb szemei a tieid, varázslatosak. Olyanok, mintha, ha túl sokáig nézném őket, egy másik dimenzióba vinnének. És igazából nem is zavarna... elveszni a tekintetedben, hogy eljussak oda.",
+      "{3} Régóta szükségem volt erre, és azt hiszem, végre megtaláltam. Őszintén szólva nem bánnám, ha a hátralévő életemet veled tölthetném. Nem bánnám, ha a hátralévő életemben csak a tiéd lennék. {4} És tudom, hogy egyedül is tudod vigyázni magadra, de ha nem tudsz, mindig itt leszek, hogy segítsek. Bármikor is ott tartasz, hogy épp meg akarsz bukni, megtartalak és segítek. Soha nem hagylak elbukni. Soha.",
+      "{5} Igen, tudom. Tudom, hogy még egy egész élet előttünk áll, de akarok egy babát, aki olyan gyönyörű, mint az anyukája. És nem, nem azért, mert imádom a pelenkacserélés ötletét, de nem érdekel, csak legyen egy családunk melletted. {6} Semmi sem valóságosabb ennél. Nem számít, mekkora távolságra leszünk, a vörös szál mindig összeköt minket.",
+      "{7} Szeretném tudni, mi az a szeretet veled, bár azt hiszem, azóta tudom, hogy megismertelek. {8} Nem hiszem, hogy az lenne, de így is... ezerszer is elkövetném azt a \u201ehib\u00e1t\u201d. {9} még mindig keresem a szavakat, hogy le tudjam írni. Azt érzem, hogy igazán szerettek, mint még soha azelőtt. A világ legszerencsésebb emberének érzem magam.",
+      "{10} Komolyan, továbbra is keresem azokat a hibákat, amikről beszélsz, de sehol sem találom őket. Minden részedet szeretem: ahogy vagy, ahogy kifejezed magad, ahogy engem érzel magaddal. Téged szeretek. {11} Bármit megtennék csak azért, hogy megmutassam, mennyire, mennyire, noooormányire, de tényleg nagyon szeretlek. Azt hiszem, ez egyértelmű: számomra egy szó könnyen üres lehet, ezért inkább megmutatom az érzéseimet ahelyett, hogy kimondanám őket. {12} És megértem, én sem vagyok a legjobb a kifejezést illetően, de az az igazság, hogy nem léteznek szavak, amikkel kifejezhetném feléd.",
+      "{13} Hozzászoktam ahhoz, hogy képtelen vagyok kitörölni a fejemből. Mindenhol ott vagy: az álmaimban, a gondolataimban. Gyakorlatilag mindig együtt vagyunk, még akkor is, ha nem beszélünk, hiszen a nap 24 órájában rád gondolok. {14} Ismétlem: nem tudom abbahagyni, hogy rád gondoljak. Mindegy, mit csinálok, a fejem mindig téged járt, nem tudom megállítani. Ahogy azt sem tudom megállítani, hogy az életem véletlenszerű pillanataiban eszembe jusson egy-egy beszélgetésünk, és elmosolyodjam. {15} Soha nem fogom megunni ezt mondani: te vagy a kedvenc gondolatom. Te vagy az első, amire felébredek, és az utolsó, amire elalszom. Nem tudom, hogyan csináltad, nem tudom kihajtani a fejemből, de mélyen belül ez tetszik. Határozottan te vagy a legjobb gondolat, ami valaha is átsuhant az agyamon. A legjobb, legfényesebb és legszebb gondolat.",
+      "{16} Ha az életemet kell feláldoznom a tiédért, szívesen megteszem. Amikor azt mondom, hogy bármit megtennék érted, nagyon komolyan gondolom. {17} Komolyan, mintha egyenesen az álmaimból léptél volna elő. Pontosan olyan vagy, ahogy megálmodtalak, egy valóra vált álom vagy. Még mindig nehéz elhinni, hogy ez igaz. Ha ez egy álom, azt kérem az Istentől, hogy soha ne ébresszen fel.",
+      "{18} Emlékszem, hogy nem kell semmi hivatalos ahhoz, hogy tudjam, te vagy az életem szerelme. {19} Senki sem lesz soha jobb nálad semmilyen értelemben. A szememben ez így van: te vagy a tökéletesség megtestesülése. {20} Utálom, amikor szomorú vagy, amikor eltűnik a szép mosolyod az arcodról, és utálom ezt. Látni, ahogy boldog vagy, engem is boldoggá tesz. De a legvarázslatosabb az egészben az, hogy még akkor sem tűnik el az a jellegzetes ragyogásod, ha szomorú vagy. Fényesebb vagy egy gyémántnál, és értékesebb is, persze.",
+      "{21} Minden másodperc, amit veled töltök, különlegesnek érződik, igazán varázslatosnak. Bármit is csinálunk, veled mindig különleges. És eléggé biztos vagyok benne, hogy azért érződik különlegesnek, mert veled van. Lehetetlennek tartom, hogy bárki mással így éreznék. {22} Valami, ami jól esik, valami, ami élettel tölteni engem. Tudom, hogy sosem voltam halott, de visszahoztál az életbe, visszadtad azt a ragyogást, amit elvettek tőlem. Bármelyik rossz napból lehet jó nap pusztán azzal, hogy meghallom a hangodat.",
+      "{23} Nem akarom, hogy valaha is elengedj, soha, soha, soha, soha. Tudom, néha hibázok, vagy őszintén szólva, elég gyakran. Nem szándékosan csinálom, az utolsó dolog, amit akarok, hogy egy butaság miatt eltávolodj tőlem. Ez a legrosszabb rémálmom. Garantálom, hogy bármi is történik, bármit is mondok, továbbra is szeretni foglak. Bár néha butaságok miatt mérges leszek, soha nem lesz igazán a te hibád. Megígérem. {24} A felhőkön lebegve élem az életemet, egy álmot. Nem akarok leszállni soha. Hagyj itt repülni, élni a legnagyobb álmomat és vágyamat: boldognak lenni.",
+      "{25} Bízom benned. A kezedben van a szívem, és tudom, hogy nagyon biztonságban van ott. Neked adom a szívem. Nem hiszem, hogy lenne nálad jobb ember, akinek odaadhatnám. Hiszen megérdemled: te gyógyítottad meg, szeretettel begyógyítottad minden egyes sebét. És bár még nagyon sok mindent meg kell gyógyulnia, biztos vagyok benne, hogy szeretettel meggyógyítod azt, amit mások szavakkal törték szét. {26} Nagyon biztos vagyok benne, hogy ha minden elfelejtenék, visszatérnék hozzád. Tudod, miért? Mert érezném, hogy hiányzik valami. Biztosan megpróbálnám kitölteni, ami hiányzik, ahogy már tettem, de semmi sem változna. Senki sem tudna úgy teljessé tenni, mert egyikük sem lennél te. A lelkem akkor is téged keresne, ha nem is emlékezném rád. Ha az életem egy kirakós lenne, te mindig is a hiányzó darab voltál.",
+      "{27} Gyógyíts meg, szerelmem, kérlek. Szomorú, hogy valamit meggyógyítasz, amit te magad nem is törtél szét, de úgy teszed, hogy még csak nem is erőlködsz. Élve érzem magam veled, önmagamnak érzem magam, úgy érzem, hogy lehetek én magam, anélkül, hogy valaki más lennék. Veled tudok önmagam lenni. Biztonságban érzem magam melletted. Tudom, hogy semmi rossz nem történhet, amíg veled vagyok.",
+      "{28} Kiviszed belőlem a gyerekes oldalamat, úgy érzem magam melletted, mint egy kislány, és imádom ezt az érzést. És tényleg furcsa, mert ez az egyik dolog, amit utáltam a korábbi kapcsolataimban: a gyerekes embereket. Spoiler: a probléma mindig az volt, hogy férfi volt. A férfiak amúgy is undorítanak, és nem voltam hajlandó elviselni a gyerekes viselkedésüket, még akkor sem, amikor \u201eheter\u00f3\u201d voltam. Most már rájöttem, hogy a gyerekesség nem rossz dolog — sőt, jó dolog, azt jelenti, hogy kihozod belőlem a belső gyermeket. Ha most itt lenne a kis én, és mondhatna véleményt, biztos vagyok benne, hogy nem értené, miért vagyok egy nővel és nem egy kék szemű szőke férfival, de miután megértené, milyen jól érzem magam veled, mindent megértene, és a lehető leghamarabb meg akarna ismerni. Ha \u201efi\u00faim\u00e1d\u00f3 4life\u201d voltam, az csak azért volt, hogy beilleszkedjek és olyan legyek, mint a többiek, sajnos. Bár megismerhettelek volna hamarabb. Nem tudom, őszintén, hogy akkoriban úgy tudtalak volna értékelni, ahogy most, de azt kívánom, bárcsak a lelkem sokkal hamarabb megtalált volna téged.",
+      "{29} Tiéred, csak a tiéged. És ha még külön is válnánk útjaink, az is az maradna. Örökké a szívem érted fog dobogni. Féltem újra szeretni, nagyon féltem, jobban, mint el tudom mondani. Emlékeztem, hogy a szeretet fáj, és nagyon, de a szeretet mindent megtesz, csak épp nem fáj. Amikor megtaláltalak, úgy döntöttem, hogy kockáztatok, és vállalom, hogy újra szenvedjek. Ez a legjobb döntés, amit hozhattam. Nagyon biztos vagyok ebben. Jól érzem magam veled, úgy érzem, mindennel meg tudok bánni, ami jön, mert veled vagyok. Jót teszel nekem.",
+      "{30} Fogalmad sincs, milyen büszke vagyok rá, hogy a barátnőm vagy. Soha nem tudnék szégyenkezni amiatt. A legnagyobb büszkeség, hogy a barátnőm vagy. Tudod? Olyasmi: tesó, nézd az én nőm, ő engem választott. ENGEM. Köszönöm, hogy a barátnőd lehetek, hogy engem választottál a többi lehetőség közül, hogy megadod nekem azt a nagy kiváltságot, hogy megismerjelek. {31} Minden éjszaka azt kérem az Istentől, hogy vigyázzon rád és boldogságot adjon neked, mert senki más nem érdemli meg annyira a világon.",
+      "{32} Veled akarok lenni mindig, látni, ahogy boldogulsz, nevetesz, eléred a céljaidat, látni, ahogy boldog vagy önmagadként. Nem minden nap boldog, és ezt tudom, ezért elkötelezem magamat amellett, hogy ott vagyok mind a jó, mind a rossz pillanatokban. Ott leszek veled, hogy megöleljelek, miközben sírsz vagy nevetzel. Ez az, ami a szeretetről szól: mindig ott lenni, bármi is történjen. És ezért soha nem hagyom el az oldaladat, mint egy Minecraft kutyus. Az egyetlen módja annak, hogy abbahagyjam, hogy veled legyek, az, ha te úgy döntesz, hogy hagyjam.",
+      "Téged kértem, téged kívántam minden 11:11-kor. Az egész életemben vágytam rád anélkül, hogy tudtam volna. Te vagy a legjobb dolog, ami történhetett velem, és tényleg nagyon hálás vagyok, hogy részese lehetek az életednek. Tudom, hogy a korábbi szerelmi tapasztalataid nem voltak a legjobbak, ezért minden nap erőfeszítéseket teszek azért, hogy megtanuld, mi az a szeretet, hogy ha egy nap már nem leszek én, tudd, mi az, amit megérdemelsz, és mi nem. Lehet, hogy nem tudok megadni neked mindent, amit megérdemelsz, de meg tudom adni neked az összes szeretetet, amit a szívem fel tud kínálni.",
+      "Lehet, hogy néha szexuális témákról beszélek. Csak azt akarom mondani, hogy mindent, amit mondok, humorral teszek, és egyetlen pillanatban sem akarom, hogy olyat csinálj, amit nem akarsz, és főleg nem fogok mérges lenni, mert nem csinálsz valamit. Minden ember ezen a világon megérdemli a tiszteletet, megérdemli, hogy a testét és döntéseit tiszteletben tartsák. Sajnálom, ha korábban senki nem tisztelt téged. Itt vagyok én, hogy megtegyem helyettük mindazok helyett, akik nem tették. És bár tényleg nem tudom, min mentél keresztül, megértelek és melletted állok, és mindig itt leszek neked, ha beszélned kell bármiről. Hidd el, fontos nekem. Minden apróság, amit mondasz, fontos nekem. Tényleg fontos. Akár úgy, hogy épp láttál egy hangyát, ami egy darab kenyeret cipel, vagy úgy, hogy épp költöznél, vagy úgy, hogy itál vizet, és az ízlett igazi szarnak. Mindez fontos nekem. Nem butaságok ezek számomra, garantálom, hogy fontosak lesznek, és emlékezni fogok rájuk, bármiről is legyen szó.",
+      "És ha már nem lennénk együtt, továbbra is itt leszek, amikor szükséged van rám. Mint például, ha az új párod egy igazi seggfej veled, és adnom kell neki pár \u201eleck\u00e9t\u201d arról, hogyan érdemled meg, hogy bántsanak, vagy mint amikor épp össze akarsz házasodni, de meggondolod magad, akkor megtalállak, és együtt elszökünk. Bármi is történjen, mindig itt leszek neked. Nem számít, mi."
+    ]
+  },
+  "es": {
+    "intro": "Para ti",
+    "hint": "toca el sello para abrir",
+    "date": "12 de julio de 2026",
+    "counter_pre": "Llevamos",
+    "days": "días",
+    "hours": "horas",
+    "minutes": "minutos",
+    "seconds": "segundos",
+    "and": "y",
+    "counter_suf": "juntos",
+    "playlist_pre": "Por alguna razón haces que no pueda escuchar ciertas canciones sin pensar en ti. Hay demasiadas que...",
+    "playlist_link": "me recuerdan a ti...",
+    "close": "Nunca me cansaré de agradecerte por llegar a mi vida. Eres lo mejor que me pasó. Gracias por todo, chica perfecta.",
+    "sig": "Te amo.",
+    "sl_title": "Las canciones que escondí en esta carta",
+    "sl_close": "cerrar",
+    "music_on": "silenciar música",
+    "music_off": "escuchar música",
+    "p": [
+      "¡Gracias por ser tú! Por ser tú cada día, por permitirme ser parte de tu vida, por dejarme ser tu novia, por todo el amor que me das cada día... simplemente, gracias por todo. Aún me pregunto cómo pude vivir tanto tiempo sin ti. Me complementas perfectamente. {0} no me arrepiento en nada de que lo hayas hecho.",
+      "Me sacas ese lado tan raro y a la vez especial. Y sí, ya sé que lo digo siempre, pero es la verdad. Te puedo jurar que nunca nadie me había sacado esta parte de mí, estas ganas de amar, estas ganas de demostrarte lo mucho que te puedo amar, estas ganas de enseñarte lo que es el amor, estas ganas de enseñarte a amar... Cada día descubro aún más cómo se siente amar. ¿No duele? ¿Raro, no? Supongo que es cierto: el amor no debe doler. Solo que eso yo aún no lo sabía. Me fascina cómo en un mes —sí, exacto, UN MES— me enseñaste tantas cosas de amar. Lo que no logré aprender en años lesbianos y años heterosexuales lo aprendí contigo en un mes: 31 días, 44.800 minutos, 2.628.002,88 segundos. Gracias por enseñarme a amar.",
+      "{1} Es algo tonto, pero me encanta cuando ríes, cuando una de mis extrañas bromas te hacen sonreír. No sabes lo feliz que me hace eso. {2} Tienes los ojos más preciosos que he visto en mi vida, son mágicos. Como si, si los mirara demasiado, me fueran a llevar a otra dimensión. Y no me importaría mucho, en verdad... perderme en tu mirada para llegar ahí.",
+      "{3} Lo llevo necesitando hace mucho, y creo que por fin lo encontré. No me molestaría pasar el resto de mi vida contigo, siendo sincera. No me molestaría reservarte para mí por el resto de mi vida. {4} Y sé que sabes cuidarte sola, pero cuando no puedas, siempre estaré para ayudarte. Siempre que estés a punto de caer, te atraparé y ayudaré. No te voy a dejar caer nunca. Nunca.",
+      "{5} Sí, lo sé. Sé que nos queda toda una vida por delante, pero quiero una bebé igual de hermosa que su mamá. Y no, no es que me encante la idea de cambiar pañales, pero no me importa con tal de tener una familia a tu lado. {6} Nada más real que eso. No importa la distancia a la que estemos, el hilo rojo siempre nos unirá.",
+      "{7} Quiero saber qué es el amor contigo, aunque creo saberlo desde el día en que te conocí. {8} No creo que lo sea, pero aun así... volvería a cometer el \"error\" una y mil veces más. {9} sigo buscando las palabras para poderlo describir. Me haces sentir verdaderamente amada, como nunca antes me sentí. Me haces sentir la persona más afortunada del mundo.",
+      "{10} Es en serio, sigo buscando los defectos de los cuales hablas pero no los encuentro por ningún lugar. Me gusta cada parte de ti: tu forma de ser, tu forma de expresarte, la forma en la que me haces sentir. Me gustas tú. {11} Soy capaz de hacer lo que sea solo por demostrarte lo mucho, mucho, muuuucho, pero mucho que te amo. Supongo que lo dejé claro: para mí, una palabra puede fácilmente estar vacía, por eso prefiero demostrar mis sentimientos en lugar de decirlos. {12} Y lo entiendo, tampoco soy la mejor expresándome, pero es que tampoco es que existan palabras para expresártelo.",
+      "{13} Me acostumbré a no saberte sacar de mi mente. Estás en todos lados: en mis sueños, en mis pensamientos. Prácticamente estamos siempre juntas aunque no hablemos, ya que paso 24/7 pensándote. {14} Lo repito: no puedo parar de pensar en ti. Da igual lo que haga, mi mente siempre piensa en ti, no puedo evitarlo. Igual que tampoco puedo evitar, en momentos random de mi vida, recordar conversaciones nuestras y sonreír. {15} No me cansaré de decirlo: eres mi pensamiento favorito. Eres lo primero que pienso al despertar y lo último que pienso antes de dormir. No sé cómo lo lograste, no te logro sacar de mi mente, pero en el fondo eso me gusta. Definitivamente eres el mejor pensamiento que ha pasado por mi cabeza. El mejor, más brillante y hermoso pensamiento.",
+      "{16} Si tengo que sacrificar mi vida por la tuya, lo hago con gusto. Cuando digo que haría cualquier cosa por ti, lo digo muy en serio. {17} En serio, es como si hubieras salido de mis sueños. Eres exactamente como te soñé, eres un sueño hecho realidad. Aún me cuesta creer que esto sea cierto. Si es un sueño, le pido a Dios no despertar nunca.",
+      "{18} recuerdo que no necesito nada oficial para saber que eres el amor de mi vida. {19} Nadie nunca será mejor que tú en ningún sentido. Ante mis ojos es así: eres la definición de la perfección en persona. {20} Odio que te sientas triste, que tu bella sonrisa desaparezca de tu cara, y odio eso. Verte feliz me hace feliz. Pero lo más mágico de esto es que ni estando triste se va el brillo tan característico que tienes. Eres más brillante que un diamante, y más valiosa también, obviamente.",
+      "{21} Cada segundo que paso contigo se siente especial, se siente mágico verdaderamente. Hagamos lo que hagamos, se siente especial contigo. Y estoy bastante segura de que se siente especial porque es contigo. Me parece imposible que se pueda sentir igual con alguien que no seas tú. {22} Algo que me hace sentir bien, algo que me hace sentir viva. Sé que nunca estuve muerta, pero me devolviste a la vida, me devolviste el brillo que me arrebataron. Cualquier día malo se puede volver uno bueno con el simple hecho de escuchar tu voz.",
+      "{23} No quiero que me sueltes nunca, nunca, nunca, nunca. Lo sé, puedo cometer errores a veces, o siendo sincera, bastante seguido. No lo hago a propósito, lo menos que quiero es que por una tontería te alejes de mí. Es mi peor pesadilla. Te puedo garantizar que pase lo que pase, diga lo que diga, te sigo amando. Aunque a veces me enoje por estupideces, nunca será verdaderamente culpa tuya. Te lo prometo. {24} Me haces flotar en las nubes, viviendo un sueño. No quiero bajar nunca. Déjame aquí volando, viviendo mi más grande sueño y deseo: ser feliz.",
+      "{25} Confío en ti. Tienes mi corazón en tus manos y sé que está muy seguro ahí. Te lo confío a ti. No creo que haya mejor persona que tú para darle mi corazón. Después de todo, tenés mérito: tú lo sanaste, curaste cada una de sus heridas con amor. Y aunque aún le falta mucho por sanar, estoy segura de que curarás con amor lo que otros rompieron con palabras. {26} Estoy muy segura de que si olvidara todo, volvería a ti. ¿Sabes por qué? Porque sentiría que algo me falta. Seguramente intentaría llenar lo que me falta, como ya hice, pero nada cambiaría. Nadie lograría hacerme sentir completa, porque ninguna de esas personas serías tú. Mi alma te buscaría aunque no te recuerde. Si mi vida fuera un puzzle, tú siempre fuiste la pieza faltante.",
+      "{27} Cúrame, amor mío, por favor. Es triste que sanes algo que ni siquiera tú rompiste, pero es que lo haces sin siquiera esforzarte. Me siento viva estando contigo, me siento yo, siento que puedo ser yo sin ser nadie más. Puedo ser yo misma contigo. Me siento segura a tu lado. Sé que nada malo puede pasar mientras estoy contigo.",
+      "{28} Me sacas mi lado infantil, me haces sentir como una niña estando contigo, y me encanta esa sensación. Y en verdad es raro, era algo que odiaba en otras relaciones: las personas infantiles. Spoiler: el problema siempre fue que era hombre. Los hombres de por sí me dan asco, y no estaba para soportar comportamientos infantiles de su parte, y era así aun siendo \"hetero\". Ahora me doy cuenta de que ser infantil no es algo malo, al contrario, es algo bueno, significa que haces salir a mi niña interior. Si ahora mismo la yo pequeña estuviera aquí y pudiera opinar, estoy segura de que no entendería por qué estoy con una mujer y no con un hombre rubio de ojos azules, pero seguramente al entender lo bien que me haces sentir, entendería todo y desearía conocerte lo antes posible. Si yo fui \"bicho 4life\", fue solo para encajar y ser como las demás, por desgracia. Ojalá hubiera podido conocerte antes. No sé, la verdad, si antes te habría podido valorar como lo hago ahora, pero quisiera que mi alma te hubiera encontrado antes, mucho antes.",
+      "{29} Tuyo, solo tuyo. Y aunque nos separemos, lo seguirá siendo. Por siempre mi corazón seguirá latiendo por ti. Tenía miedo de volver a amar, mucho miedo, más del que puedo describir. Recordaba que el amor dolía y mucho, pero el amor hace de todo menos doler. Al encontrarte decidí arriesgarme y tomar el riesgo de volver a sufrir. Es la mejor decisión que pude tomar. Estoy muy segura de eso. Me siento bien contigo, siento que puedo con todo lo que venga, porque te tengo a ti. Me haces bien.",
+      "{30} No sabes el orgullo que siento de que seas mi novia. Jamás me podré sentir avergonzada de que lo seas. Es el orgullo más grande tenerte como novia. ¿Sabes? Tipo: bro, mira a mi mujer, ella me escogió a mí. A MÍ. Gracias por dejarme ser tu novia, por elegirme a mí entre las demás opciones, por darme el gran privilegio de conocerte. {31} Todas las noches le pido a Dios que te cuide y te dé felicidad, porque la mereces más que nadie en el mundo.",
+      "{32} Quiero estar contigo siempre, verte triunfar, reír, cumplir tus metas, verte siendo feliz siendo tú. No todos los días son felices y lo sé, por eso me comprometo a estar tanto en los buenos momentos como en los malos. Estaré contigo para abrazarte mientras lloras o ríes. De eso se trata amar: de estar siempre ahí, pase lo que pase. Y por eso nunca me iré de tu lado, como un perrito de Minecraft. La única forma que deje de estar contigo es cuando tú decidas que deje de estarlo.",
+      "Te pedí, te deseé cada 11:11. Te llevo extrañando toda mi vida sin saberlo. Eres lo mejor que me pudo pasar, y en serio estoy muy agradecida de que me dejes ser parte de tu vida. Sé que tus otras experiencias en el amor no fueron las mejores, por eso me esfuerzo cada día para que aprendas lo que es el amor, por si un día dejo de ser yo, sepas lo que mereces y lo que no. Tal vez yo no te puedo dar todo lo que te mereces, pero te puedo dar todo el amor que tiene mi corazón para ofrecer.",
+      "Puede que algunas veces me pase hablando de temas sexuales. Solamente quiero decir que todo lo que digo es con humor, y en ningún momento voy a querer que hagas algo que no quieras, y mucho menos me enojaré porque no hagas algo. Cada persona de este mundo merece respeto, merece que respeten su cuerpo y sus decisiones. Lo siento si nadie te respetó antes. Aquí estoy yo para hacerlo por todos los que no lo hicieron. Y aunque en verdad no sé lo que viviste, te entiendo y apoyo, y estaré siempre para ti si necesitas hablar de cualquier cosa. Créeme, me importa. Cada mínima cosa que dices, me importa. Me importa de verdad. Como si acabas de ver a una hormiga cargando un pedazo de pan, o como si te vas a mudar, o como si bebiste agua y sabía a mierda. Todo eso me importa. No son cosas tontas para mí, te aseguro que serán importantes para mí, y las recordaré, sea lo que sea.",
+      "Y aunque dejemos de estar juntas, seguiré estando aquí para cuando me necesites. Como si tu nueva pareja es una mierda contigo y tengo que darle un par de \"lecciones\" de cómo mereces ser tratada, o como si estás a punto de casarte y te arrepientes, yo te busco y nos escapamos juntas. Pase lo que pase, siempre estaré para ti. No importa qué."
+    ]
+  }
+}
+;
+
+/* ===== STATE ===== */
+var lang='es';
+var START=new Date('2026-06-12T12:13:00+02:00');
+
+/* ===== RENDER ===== */
+function render(){
+    var t=L[lang]; if(!t) return;
+    // Intro
+    var it=document.getElementById('introTitle');if(it)it.textContent=t.intro;
+    var ih=document.getElementById('introHint');if(ih)ih.textContent=t.hint;
+    // Date & Counter
+    document.getElementById('paperDate').textContent=t.date;
+    updateCounter(t);
+    // Paragraphs
+    var c=document.getElementById('content'); c.innerHTML='';
+    t.p.forEach(function(text,i){
+        var p=document.createElement('p');
+        if(i===0) p.className='drop reveal';
+        else p.className='reveal';
+        var html=text.replace(/\{(\d+)\}/g,function(m,n){return S[parseInt(n)]||m;});
+        p.innerHTML=html;
+        c.appendChild(p);
+    });
+    // Playlist
+    document.getElementById('playlistPre').textContent=t.playlist_pre;
+    document.getElementById('playlistLink').textContent=t.playlist_link;
+    // Closing
+    document.getElementById('closing').textContent=t.close;
+    // Signature
+    document.getElementById('signature').textContent=t.sig;
+    // Song list
+    document.getElementById('slTitle').textContent=t.sl_title;
+    var sl=document.getElementById('songlist');
+    document.getElementById('songlistBtn').textContent=sl.classList.contains('open')?t.sl_close:'♪';
+    // Re-observe
+    observeReveals();
+    // Music btn
+    updateMusicBtn(t);
+}
+
+function updateCounter(t){
+    var now=new Date();
+    var diff=now-START;
+    var d=Math.floor(diff/864e5);
+    var h=Math.floor((diff%864e5)/36e5);
+    var m=Math.floor((diff%36e5)/6e4);
+    var s=Math.floor((diff%6e4)/1e3);
+    var el=document.getElementById('counter');
+    el.innerHTML=t.counter_pre+' <span class="num">'+d+'</span> '+t.days+', <span class="num">'+h+'</span> '+t.hours+', <span class="num">'+m+'</span> '+t.minutes+' '+t.and+' <span class="num">'+s+'</span> '+t.seconds+' '+t.counter_suf;
+}
+
+function updateMusicBtn(t){
+    var btn=document.getElementById('musicBtn');
+    btn.title=musicPlaying?t.music_on:t.music_off;
+    btn.setAttribute('aria-label',musicPlaying?t.music_on:t.music_off);
+}
+
+/* ===== LANGUAGE SWITCHER ===== */
+document.getElementById('langSwitch').addEventListener('click',function(e){
+    var b=e.target.closest('button[data-lang]');
+    if(!b) return;
+    lang=b.dataset.lang;
+    this.querySelectorAll('button').forEach(function(x){x.classList.remove('active')});
+    b.classList.add('active');
+    render();
+});
+
+/* ===== INTRO ===== */
+(function(){
+    var intro=document.getElementById('intro');
+    var seal=document.getElementById('seal');
+    document.body.style.overflow='hidden';
+    function open(){
+        seal.classList.add('cracking');
+        setTimeout(function(){
+            intro.classList.add('hidden');
+            document.body.style.overflow='';
+            document.getElementById('langSwitch').classList.add('show');
+            document.getElementById('musicBtn').classList.add('show');
+            setTimeout(function(){
+                var r=document.querySelectorAll('.reveal');
+                for(var i=0;i<Math.min(3,r.length);i++) r[i].classList.add('visible');
+            },500);
+            setTimeout(function(){intro.remove()},1500);
+        },600);
+    }
+    intro.addEventListener('click',open);
+    intro.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();open()}});
+})();
+
+/* ===== COUNTER TICK ===== */
+setInterval(function(){var t=L[lang];if(t)updateCounter(t)},1000);
+
+/* ===== MUSIC ===== */
+var musicPlaying=false;
+var audio=document.getElementById('bgMusic');
+audio.volume=0.15;
+document.getElementById('musicBtn').addEventListener('click',function(){
+    if(musicPlaying){audio.pause();musicPlaying=false;this.classList.remove('playing')}
+    else{audio.play().catch(function(){});musicPlaying=true;this.classList.add('playing')}
+    var t=L[lang];if(t)updateMusicBtn(t);
+});
+
+/* ===== HEART RAIN ===== */
+document.getElementById('signature').addEventListener('click',function(){
+    for(var i=0;i<35;i++){
+        (function(idx){
+            setTimeout(function(){
+                var h=document.createElement('div');
+                h.className='heart-particle';
+                h.innerHTML='<svg width="'+(12+Math.random()*14)+'" height="'+(12+Math.random()*14)+'" viewBox="0 0 24 24" fill="'+(Math.random()>.5?'var(--accent)':'var(--gold)')+'" opacity="'+(0.3+Math.random()*0.5)+'"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>';
+                h.style.left=Math.random()*100+'vw';
+                h.style.top='-30px';
+                var dur=3+Math.random()*3;
+                h.style.animationDuration=dur+'s';
+                document.body.appendChild(h);
+                setTimeout(function(){h.remove()},dur*1000+100);
+            },idx*80);
+        })(i);
+    }
+});
+
+/* ===== SONG LIST ===== */
+document.getElementById('songlistBtn').addEventListener('click',function(){
+    var sl=document.getElementById('songlist');
+    var isOpen=sl.classList.contains('open');
+    if(isOpen){sl.classList.remove('open');this.textContent='♪'}
+    else{
+        sl.classList.add('open');
+        var t=L[lang];this.textContent=t?t.sl_close:'cerrar';
+        if(sl.querySelector('li')) return;
+        var list=document.getElementById('slList');
+        S.forEach(function(s,i){
+            var li=document.createElement('li');
+            li.innerHTML=s;
+            list.appendChild(li);
+        });
+    }
+});
+
+/* ===== SCROLL REVEAL ===== */
+var observer;
+function observeReveals(){
+    if(observer) observer.disconnect();
+    observer=new IntersectionObserver(function(entries){
+        entries.forEach(function(e){if(e.isIntersecting) e.target.classList.add('visible')});
+    },{threshold:0.08,rootMargin:'0px 0px -30px 0px'});
+    document.querySelectorAll('.reveal').forEach(function(el){observer.observe(el)});
+}
+
+/* ===== PARTICLES ===== */
+(function(){
+    var c=document.getElementById('particles'),ctx=c.getContext('2d'),ps=[],N=22;
+    function resize(){c.width=window.innerWidth;c.height=document.documentElement.scrollHeight}
+    resize();window.addEventListener('resize',resize);
+    var rt;window.addEventListener('scroll',function(){clearTimeout(rt);rt=setTimeout(resize,200)});
+    for(var i=0;i<N;i++) ps.push({x:Math.random()*c.width,y:Math.random()*c.height,s:Math.random()*1.6+.4,sy:-(Math.random()*.2+.06),sx:(Math.random()-.5)*.12,o:Math.random()*.18+.05,os:(Math.random()-.5)*.002,h:Math.random()>.5?'196,139,159':'201,169,110'});
+    var mq=window.matchMedia('(prefers-reduced-motion: reduce)');
+    function anim(){
+        ctx.clearRect(0,0,c.width,c.height);
+        for(var i=0;i<ps.length;i++){
+            var p=ps[i];ctx.beginPath();ctx.arc(p.x,p.y,p.s,0,6.28);
+            ctx.fillStyle='rgba('+p.h+','+p.o+')';ctx.fill();
+            if(p.s>1){ctx.beginPath();ctx.arc(p.x,p.y,p.s*3,0,6.28);ctx.fillStyle='rgba('+p.h+','+(p.o*.12)+')';ctx.fill()}
+            p.y+=p.sy;p.x+=p.sx;p.o+=p.os;
+            if(p.o<=.02||p.o>=.22)p.os*=-1;
+            if(p.y<-20){p.y=c.height+20;p.x=Math.random()*c.width}
+            if(p.x<-20)p.x=c.width+20;if(p.x>c.width+20)p.x=-20;
+        }
+        requestAnimationFrame(anim);
+    }
+    if(!mq.matches) anim();
+    mq.addEventListener('change',function(){if(mq.matches){ctx.clearRect(0,0,c.width,c.height)}else{anim()}});
+})();
+
+/* ===== TAB TITLE ===== */
+var titleHidden=['te extraño...','vuelve...','te pienso...','💗'];
+var titleIdx=0;
+var titleInterval;
+var originalTitle='Para ti';
+document.addEventListener('visibilitychange',function(){
+    if(document.hidden){
+        titleIdx=0;
+        document.title=titleHidden[0];
+        titleInterval=setInterval(function(){titleIdx=(titleIdx+1)%titleHidden.length;document.title=titleHidden[titleIdx]},2500);
+    }else{
+        clearInterval(titleInterval);
+        document.title=originalTitle;
+    }
+});
+
+/* ===== INIT ===== */
+render();
+</script>
+</body>
+</html>
